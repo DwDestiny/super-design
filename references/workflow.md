@@ -16,7 +16,8 @@
 - Provide at least one structural variant if it improves clarity.
 
 ## Theme design requirements (3 variants)
-- Recommend 3 distinct styles based on the user’s business characteristics.
+- Recommend 3 clearly different style directions based on the user’s business characteristics.
+- The differences must be obvious at first glance (not just color changes).
 - Each variant must:
   - Use the theme variable specification from references/theme-spec.md.
   - Select typography from the approved Google Fonts list in references/design-guidelines.md.

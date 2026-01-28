@@ -85,3 +85,6 @@
 - Keep motion under 200ms for UI feedback; avoid large scale jumps.
 - Buttons, cards, and menus should all have hover feedback.
 - Prefer opacity, shadow, and border color transitions to heavy transforms.
+
+## Forbidden
+- Do not use emoji in any UI text, labels, or icons.

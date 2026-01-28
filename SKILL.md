@@ -15,7 +15,7 @@ Use a structured, approval-gated workflow, strict visual guidelines, and a local
 
 ## Workflow (must follow in order)
 1. Layout design: produce an ASCII wireframe.
-2. Theme design: propose 3 recommended style variants based on the user’s business context.
+2. Theme design: propose 3 distinct style directions based on the user’s business context.
 3. Motion design: specify micro-interactions and transitions aligned to the chosen style.
 4. Generate the first single-page HTML design in 3 style variants.
 5. Tell the user how to start the local board server and view the dashboard.
@@ -99,9 +99,11 @@ See references/workflow.md for the detailed procedure and constraints.
 - Use open-source images (real URLs) instead of placeholders.
 - Use real icons from open-source icon libraries; no empty placeholders.
 - Use 4pt or 8pt spacing system and keep touch targets ≥ 48px.
+- Do not use emoji in any UI text, labels, or icons.
 
 ## Style variation guidance (non-formula)
-- The 3 variants should be meaningfully different in design intent, not just color swaps.
+- The 3 outputs must be clearly different design styles, not minor variants.
+- Style differences must be obvious at first glance so the user can pick a direction.
 - Vary at least two of these aspects per variant:
   - Typography pairing and hierarchy emphasis
   - Layout density and whitespace rhythm

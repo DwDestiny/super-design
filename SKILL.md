@@ -24,6 +24,22 @@ Use a structured, approval-gated workflow, strict visual guidelines, and a local
 
 See references/workflow.md for the detailed procedure and constraints.
 
+## Step-to-tool mapping
+1. Layout design:
+   - No tools required. Output ASCII wireframe only.
+2. Theme design:
+   - Write theme CSS files into `/.superdesign/themes/`.
+   - Copy the default baseline CSS if it is not present.
+3. Motion design:
+   - Document micro-interaction rules; no tools required.
+4. HTML generation:
+   - Write HTML files into `/.superdesign/design_iterations/`.
+   - Link the baseline CSS first (if present), then the chosen theme CSS.
+5. Board preview:
+   - Create the one-click script in `/.superdesign/design_iterations/`.
+   - Start the board server so the user can compare variants.
+6. After selection:
+   - Continue with single-style HTML outputs only.
 ## Tools & Commands (when to use)
 ### Local board server
 - Use after step 4 (first-page HTML variants generated) to let the user compare and pick a style.
@@ -32,6 +48,8 @@ See references/workflow.md for the detailed procedure and constraints.
   - `./.superdesign/design_iterations/start_board.sh`
 - Fallback (if the script is unavailable):
   - `python3 /path/to/skill/scripts/serve_dashboard.py --root <project>/.superdesign/design_iterations --port 3077`
+- If the port is in use:
+  - Re-run with a different port, e.g. `--port 3088`
 
 ### Scripts included in this skill
 - `scripts/serve_dashboard.py`
@@ -82,10 +100,20 @@ See references/workflow.md for the detailed procedure and constraints.
 - Use real icons from open-source icon libraries; no empty placeholders.
 - Use 4pt or 8pt spacing system and keep touch targets ≥ 48px.
 
+## Style variation guidance (non-formula)
+- The 3 variants should be meaningfully different in design intent, not just color swaps.
+- Vary at least two of these aspects per variant:
+  - Typography pairing and hierarchy emphasis
+  - Layout density and whitespace rhythm
+  - Component styling (radius, borders, shadow weight)
+  - Accent usage and visual focal points
+  - Illustration/image treatment and cropping
+
 ## Integration notes
 - The board server is only meaningful after HTML pages exist.
 - For multi-page projects, keep the selected style consistent across all subsequent pages.
 - Always tell the user the local URL printed by the server and how to stop it.
+ - If the board script is missing, generate it before asking the user to run it.
 
 ## Skill tree
 - Design workflow

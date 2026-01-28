@@ -11,6 +11,9 @@ python3 /Users/dw/.codex/skills/super-design/scripts/serve_dashboard.py --root .
 ## One-click script (recommended)
 Create a helper script in the prototype directory after the first HTML variants are generated.
 
+You can copy the template from:
+- /Users/dw/.codex/skills/super-design/scripts/start_board.sh
+
 ### macOS/Linux
 Create `design_iterations/start_board.sh`:
 ```

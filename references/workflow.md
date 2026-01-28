@@ -30,9 +30,9 @@
 - Output a single HTML page for one screen only.
 - For the first page, generate 3 HTML variants aligned to the 3 recommended styles.
 - Use the file naming convention:
-  - design_iterations/{design_name}_A_{n}.html
-  - design_iterations/{design_name}_B_{n}.html
-  - design_iterations/{design_name}_C_{n}.html
+  - .superdesign/design_iterations/{page_slug}_A_1.html
+  - .superdesign/design_iterations/{page_slug}_B_1.html
+  - .superdesign/design_iterations/{page_slug}_C_1.html
 - Reference the theme CSS file created in the Theme step.
 
 ## Board server notice
@@ -41,6 +41,17 @@
   - Windows: design_iterations/start_board.ps1
 - Use the exact commands from references/board-runbook.md (absolute path already filled).
 - Explain to the user that the dashboard will list all versions and allow preview in one place.
+
+## Directory and naming rules (all steps)
+- Base workspace directory:
+  - .superdesign/
+- Theme outputs (step 2):
+  - .superdesign/themes/{project_slug}_{variant}.css
+- HTML outputs (step 4 and after):
+  - .superdesign/design_iterations/{page_slug}_{variant}_{n}.html
+- Board script location (step 5):
+  - .superdesign/design_iterations/start_board.sh
+  - .superdesign/design_iterations/start_board.ps1
 
 ## After selection
 - Ask the user to pick Variant A/B/C.

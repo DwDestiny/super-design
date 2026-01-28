@@ -24,6 +24,52 @@ Use a structured, approval-gated workflow, strict visual guidelines, and a local
 
 See references/workflow.md for the detailed procedure and constraints.
 
+## Tools & Commands (when to use)
+### Local board server
+- Use after step 4 (first-page HTML variants generated) to let the user compare and pick a style.
+- Purpose: serve the design iteration board and render HTML pages as a canvas of iframes.
+- Command (from project root):
+  - `./.superdesign/design_iterations/start_board.sh`
+- Fallback (if the script is unavailable):
+  - `python3 /path/to/skill/scripts/serve_dashboard.py --root <project>/.superdesign/design_iterations --port 3077`
+
+### Scripts included in this skill
+- `scripts/serve_dashboard.py`
+  - Standalone HTTP server for the board UI and file browsing.
+  - Use for preview if the project does not provide `start_board.sh`.
+- `scripts/start_board.sh`
+  - Template one-click board script (macOS/Linux).
+  - Use at step 5: copy into `/.superdesign/design_iterations/start_board.sh` with the absolute path preserved.
+- `scripts/test_dashboard.py`
+  - Smoke test for the dashboard server.
+- `scripts/test_board_state.js`
+  - Unit test for the board UI state helpers.
+
+## Artifacts & Output Paths
+- Design HTML outputs:
+  - `/.superdesign/design_iterations/` (project workspace)
+- Theme CSS outputs:
+  - `/.superdesign/themes/` (project workspace)
+- Board UI assets:
+  - `assets/dashboard/` (inside this skill package)
+- Data index endpoint:
+  - `GET /api/index` from the local board server
+
+## Naming conventions (required)
+- Theme CSS file:
+  - `/.superdesign/themes/{project_slug}_{variant}.css`
+- First-page HTML variants:
+  - `/.superdesign/design_iterations/{page_slug}_A_1.html`
+  - `/.superdesign/design_iterations/{page_slug}_B_1.html`
+  - `/.superdesign/design_iterations/{page_slug}_C_1.html`
+- Subsequent pages (single chosen style only):
+  - `/.superdesign/design_iterations/{page_slug}_{chosen_variant}_{n}.html`
+
+## Integration notes
+- The board server is only meaningful after HTML pages exist.
+- For multi-page projects, keep the selected style consistent across all subsequent pages.
+- Always tell the user the local URL printed by the server and how to stop it.
+
 ## Skill tree
 - Design workflow
   - ASCII wireframing and layout decomposition

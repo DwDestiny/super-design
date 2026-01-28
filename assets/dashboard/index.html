@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SuperDesign Board</title>
+    <style>
+      :root {
+        --bg: #07090f;
+        --bg-soft: #0c0f18;
+        --panel: #111522;
+        --panel-2: #0f131d;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+        --border: #1f2635;
+        --accent: #8b5cf6;
+        --accent-2: #22d3ee;
+        --shadow: 0 18px 50px rgba(2, 6, 23, 0.6);
+      }
+      [data-theme='light'] {
+        --bg: #f7f0db;
+        --bg-soft: #f7f0db;
+        --panel: #fff9e9;
+        --panel-2: #fff3d6;
+        --text: #2b2b2b;
+        --muted: #6b6b6b;
+        --border: #eadfc5;
+        --accent: #6366f1;
+        --accent-2: #06b6d4;
+        --shadow: 0 18px 50px rgba(113, 99, 69, 0.18);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        height: 100vh;
+        overflow: hidden;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(10, 12, 18, 0.85);
+        backdrop-filter: blur(16px);
+      }
+      [data-theme='light'] header {
+        background: rgba(255, 243, 214, 0.8);
+      }
+      header h1 {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: 0.6px;
+      }
+      header .meta {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .toolbar input {
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      .icon-btn {
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+      .icon-btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(148, 163, 184, 0.5);
+      }
+      .icon-btn:active {
+        transform: translateY(0);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+      }
+      .board {
+        position: relative;
+        height: calc(100vh - 52px);
+        overflow: hidden;
+        background: var(--bg);
+      }
+      .canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform-origin: 0 0;
+        width: 5000px;
+        height: 3500px;
+        padding: 36px;
+      }
+      .card {
+        position: absolute;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        contain: layout paint;
+        will-change: transform;
+      }
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+      }
+      .card.selected {
+        outline: 2px solid var(--accent);
+      }
+      .card header {
+        height: 38px;
+        padding: 0 14px;
+        background: var(--panel-2);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        cursor: grab;
+      }
+      .card header:active {
+        cursor: grabbing;
+      }
+      .card header h3 {
+        margin: 0;
+        font-size: 12px;
+      }
+      .card header .meta {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .frame-wrapper {
+        position: relative;
+        flex: 1;
+        background: transparent;
+        overflow: hidden;
+      }
+      .frame-wrapper iframe {
+        border: none;
+        transform-origin: 0 0;
+        background: transparent;
+        pointer-events: auto;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .frame-mask {
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        pointer-events: auto;
+        cursor: pointer;
+        background: transparent;
+      }
+      .card.selected .frame-mask {
+        pointer-events: none;
+        cursor: default;
+      }
+      [data-theme='light'] .frame-mask {
+        border-color: rgba(43, 43, 43, 0.08);
+      }
+      .floating-panel {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        background: rgba(17, 21, 34, 0.82);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        min-width: 56px;
+      }
+      [data-theme='light'] .floating-panel {
+        background: rgba(255, 249, 233, 0.9);
+      }
+      .floating-panel.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .floating-label {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+      }
+      .dropdown {
+        position: relative;
+      }
+      .dropdown button {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        color: var(--text);
+        padding: 0;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+      .dropdown button:hover {
+        transform: translateY(-1px);
+        border-color: rgba(148, 163, 184, 0.5);
+        background: rgba(148, 163, 184, 0.08);
+      }
+      .dropdown button:active {
+        transform: translateY(0);
+      }
+      .device-button svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+      }
+      .dropdown ul {
+        list-style: none;
+        padding: 6px;
+        margin: 6px 0 0;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        position: absolute;
+        min-width: 140px;
+        z-index: 5;
+        display: none;
+        left: 46px;
+        top: 0;
+      }
+      .dropdown ul li {
+        padding: 6px 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .dropdown ul li:hover {
+        background: rgba(99, 102, 241, 0.15);
+      }
+      .dropdown.open ul {
+        display: block;
+      }
+      .floating-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .menu-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        width: 36px;
+        height: 36px;
+        justify-content: center;
+        padding: 0;
+        font-size: 12px;
+        color: var(--text);
+        cursor: pointer;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+      .menu-row:hover {
+        transform: translateY(-1px);
+        border-color: rgba(148, 163, 184, 0.5);
+        background: rgba(148, 163, 184, 0.08);
+      }
+      .menu-row:active {
+        transform: translateY(0);
+      }
+      .menu-row svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+      }
+      .hint {
+        position: absolute;
+        left: 24px;
+        bottom: 18px;
+        font-size: 12px;
+        color: var(--muted);
+        background: rgba(15, 17, 23, 0.6);
+        padding: 8px 12px;
+        border-radius: 999px;
+      }
+      [data-theme='light'] .hint {
+        background: rgba(255, 249, 233, 0.8);
+      }
+      .toast-container {
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 20;
+      }
+      .toast {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        box-shadow: var(--shadow);
+        font-size: 12px;
+        animation: toast-in 0.2s ease;
+      }
+      .toast.success {
+        border-color: rgba(34, 197, 94, 0.4);
+      }
+      .toast.warning {
+        border-color: rgba(245, 158, 11, 0.5);
+      }
+      .toast.error {
+        border-color: rgba(239, 68, 68, 0.5);
+      }
+      .toast.info {
+        border-color: rgba(99, 102, 241, 0.4);
+      }
+      .toast svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+      }
+      @keyframes toast-in {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 30;
+      }
+      [data-theme='light'] .modal-backdrop {
+        background: rgba(148, 136, 102, 0.25);
+      }
+      .modal-backdrop.active {
+        display: flex;
+      }
+      .modal {
+        width: 360px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        animation: toast-in 0.18s ease;
+      }
+      .modal-title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .modal-body {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .modal-btn {
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        color: var(--text);
+        padding: 8px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      }
+      .modal-btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(148, 163, 184, 0.5);
+        background: rgba(148, 163, 184, 0.08);
+      }
+      .modal-btn.danger {
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+        background: rgba(239, 68, 68, 0.08);
+      }
+      .modal-btn.danger:hover {
+        background: rgba(239, 68, 68, 0.16);
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <header>
+      <h1>SuperDesign Board</h1>
+      <div class="toolbar">
+        <input id="search" placeholder="Search" />
+        <button class="icon-btn" id="zoomOut" title="Zoom out">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14"/></svg>
+        </button>
+        <button class="icon-btn" id="zoomReset" title="Reset zoom">100%</button>
+        <button class="icon-btn" id="zoomIn" title="Zoom in">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
+        </button>
+      </div>
+      <div class="meta" id="lastUpdated">Loading...</div>
+    </header>
+
+      <div class="board" id="board">
+        <div class="canvas" id="canvas"></div>
+        <div class="floating-panel" id="floatingPanel">
+          <span class="floating-label" id="selectedMeta">Select</span>
+          <div class="floating-actions">
+            <div class="dropdown" id="deviceDropdown">
+              <button id="deviceButton" class="device-button" title="Switch device">
+                <svg id="deviceIcon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 4h18v12H3z"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>
+              </button>
+              <ul id="deviceList"></ul>
+            </div>
+            <button class="menu-row" id="copyName" title="Copy filename">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 9h11v11H9z"/><path d="M4 4h11v11H4z"/></svg>
+            </button>
+            <button class="menu-row" id="openTab" title="Open in new tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M5 7v14h14v-7"/></svg>
+            </button>
+            <button class="menu-row" id="deleteFile" title="Delete file">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="hint">Space + Drag to pan · Cmd/Ctrl + Scroll to zoom</div>
+      </div>
+      <div class="modal-backdrop" id="confirmModal">
+        <div class="modal">
+          <div class="modal-title" id="confirmTitle">Delete file?</div>
+          <div class="modal-body" id="confirmBody"></div>
+          <div class="modal-actions">
+            <button class="modal-btn" id="confirmCancel">Cancel</button>
+            <button class="modal-btn danger" id="confirmOk">Delete</button>
+          </div>
+        </div>
+      </div>
+
+    <script type="module">
+      import {
+        buildIndex,
+        pickInitialVariant,
+        computeGridPositions,
+        computeCardSize,
+        getDeviceLabel,
+        getCardDevice,
+        getDeviceIconSvg,
+        getThemeIconSvg,
+        getToastConfig,
+        getConfirmCopy
+      } from './board_state.js';
+
+      const canvas = document.getElementById('canvas');
+      const board = document.getElementById('board');
+      const lastUpdated = document.getElementById('lastUpdated');
+      const searchInput = document.getElementById('search');
+      const zoomOut = document.getElementById('zoomOut');
+      const zoomIn = document.getElementById('zoomIn');
+      const zoomReset = document.getElementById('zoomReset');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = document.getElementById('themeIcon');
+
+      const floatingPanel = document.getElementById('floatingPanel');
+      const selectedMeta = document.getElementById('selectedMeta');
+      const deviceButton = document.getElementById('deviceButton');
+      const deviceList = document.getElementById('deviceList');
+      const deviceDropdown = document.getElementById('deviceDropdown');
+      const deviceIcon = document.getElementById('deviceIcon');
+      const copyName = document.getElementById('copyName');
+      const openTab = document.getElementById('openTab');
+      const deleteFile = document.getElementById('deleteFile');
+      const confirmModal = document.getElementById('confirmModal');
+      const confirmTitle = document.getElementById('confirmTitle');
+      const confirmBody = document.getElementById('confirmBody');
+      const confirmCancel = document.getElementById('confirmCancel');
+      const confirmOk = document.getElementById('confirmOk');
+      const toastContainer = document.createElement('div');
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+
+      const state = {
+        designs: [],
+        cards: [],
+        selected: null,
+        zoom: 1,
+        panX: 0,
+        panY: 0,
+        previewScale: 1,
+        spaceDown: false
+      };
+
+      const cardElements = new Map();
+
+      const deviceSizes = {
+        desktop: { width: 1440, height: 900 },
+        tablet: { width: 1024, height: 768 },
+        mobile: { width: 390, height: 844 }
+      };
+
+      const chrome = { width: 0, height: 38 };
+
+      function applyTransform() {
+        canvas.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+        zoomReset.textContent = `${Math.round(state.zoom * 100)}%`;
+        positionFloatingPanel();
+      }
+
+      function loadPositions() {
+        const raw = localStorage.getItem('superdesign-board-layout');
+        return raw ? JSON.parse(raw) : {};
+      }
+
+      function savePositions(layout) {
+        localStorage.setItem('superdesign-board-layout', JSON.stringify(layout));
+      }
+
+      function computePreviewScale() {
+        return 1;
+      }
+
+      function createCardElement(card) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'card';
+        wrapper.dataset.cardId = card.id;
+
+        const header = document.createElement('header');
+        const title = document.createElement('h3');
+        title.textContent = card.display.group;
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = card.display.name;
+        header.appendChild(title);
+        header.appendChild(meta);
+        wrapper.appendChild(header);
+
+        const frameWrapper = document.createElement('div');
+        frameWrapper.className = 'frame-wrapper';
+        const frame = document.createElement('iframe');
+        frame.dataset.cardId = card.id;
+        frameWrapper.appendChild(frame);
+        const mask = document.createElement('div');
+        mask.className = 'frame-mask';
+        mask.addEventListener('pointerdown', event => {
+          event.stopPropagation();
+          selectCard(card);
+        });
+        frameWrapper.appendChild(mask);
+        wrapper.appendChild(frameWrapper);
+
+        header.addEventListener('pointerdown', event => {
+          if (state.spaceDown) return;
+          header.setPointerCapture(event.pointerId);
+          const startX = event.clientX;
+          const startY = event.clientY;
+          const startLeft = parseFloat(wrapper.style.left);
+          const startTop = parseFloat(wrapper.style.top);
+
+          const onMove = moveEvent => {
+            const dx = (moveEvent.clientX - startX) / state.zoom;
+            const dy = (moveEvent.clientY - startY) / state.zoom;
+            wrapper.style.left = `${startLeft + dx}px`;
+            wrapper.style.top = `${startTop + dy}px`;
+            positionFloatingPanel();
+          };
+
+          const onUp = upEvent => {
+            header.releasePointerCapture(upEvent.pointerId);
+            const nextLayout = loadPositions();
+            nextLayout[card.id] = {
+              x: parseFloat(wrapper.style.left),
+              y: parseFloat(wrapper.style.top)
+            };
+            savePositions(nextLayout);
+            header.removeEventListener('pointermove', onMove);
+            header.removeEventListener('pointerup', onUp);
+          };
+
+          header.addEventListener('pointermove', onMove);
+          header.addEventListener('pointerup', onUp);
+        });
+
+        header.addEventListener('click', event => {
+          event.stopPropagation();
+          selectCard(card);
+        });
+        return wrapper;
+      }
+
+      function updateCardElement(card, element) {
+        const cardDevice = getCardDevice(card.device);
+        const device = deviceSizes[cardDevice];
+        const previewScale = computePreviewScale();
+        const header = element.querySelector('header');
+        const headerHeight = header ? header.offsetHeight : chrome.height;
+        const cardSize = computeCardSize(device, previewScale, headerHeight, chrome.width);
+
+        element.style.width = `${cardSize.width}px`;
+        element.style.height = `${cardSize.height}px`;
+
+        const meta = element.querySelector('.meta');
+        if (meta) {
+          meta.textContent = card.display.name;
+        }
+
+        const frameWrapper = element.querySelector('.frame-wrapper');
+        const frame = element.querySelector('iframe');
+        if (frameWrapper) {
+          frameWrapper.style.width = `${device.width}px`;
+          frameWrapper.style.height = `${device.height}px`;
+        }
+        if (frame) {
+          const nextSrc = `/files/${encodeURIComponent(card.display.path)}`;
+          if (!frame.src.endsWith(nextSrc)) {
+            frame.src = nextSrc;
+          }
+          frame.style.width = '100%';
+          frame.style.height = '100%';
+          frame.style.transform = `scale(${previewScale})`;
+        }
+      }
+
+      function renderCanvas() {
+        const layout = loadPositions();
+        const query = searchInput.value.trim().toLowerCase();
+        const filtered = state.cards.filter(card => card.display.name.toLowerCase().includes(query));
+
+        const positions = computeGridPositions(filtered.length, 3, 900, 700, 28);
+        const activeIds = new Set(filtered.map(card => card.id));
+
+        filtered.forEach((card, index) => {
+          let element = cardElements.get(card.id);
+          if (!element) {
+            element = createCardElement(card);
+            canvas.appendChild(element);
+            cardElements.set(card.id, element);
+          }
+
+          updateCardElement(card, element);
+
+          const defaultPos = positions[index];
+          const saved = layout[card.id] || defaultPos;
+          element.style.left = `${saved.x}px`;
+          element.style.top = `${saved.y}px`;
+        });
+
+        cardElements.forEach((element, id) => {
+          if (!activeIds.has(id)) {
+            element.remove();
+            cardElements.delete(id);
+          }
+        });
+
+        if (state.selected && !activeIds.has(state.selected.id)) {
+          state.selected = null;
+        }
+        updateSelectionUI();
+      }
+
+      function selectCard(card) {
+        if (!card.device) {
+          card.device = 'desktop';
+        }
+        state.selected = card;
+        selectedMeta.textContent = card.display.name;
+        floatingPanel.classList.add('active');
+        updateSelectionUI();
+        renderDeviceControls();
+      }
+
+      function updateSelectionUI() {
+        cardElements.forEach((element, id) => {
+          element.classList.toggle('selected', Boolean(state.selected && state.selected.id === id));
+        });
+        positionFloatingPanel();
+      }
+
+      function renderDeviceControls() {
+        if (!state.selected) return;
+        const activeDevice = getCardDevice(state.selected.device);
+        deviceIcon.innerHTML = getDeviceIconSvg(activeDevice);
+        deviceButton.title = `Switch device (${getDeviceLabel(activeDevice)})`;
+        deviceList.innerHTML = '';
+        ['desktop', 'tablet', 'mobile'].forEach(device => {
+          const item = document.createElement('li');
+          item.textContent = getDeviceLabel(device);
+          item.addEventListener('click', () => {
+            deviceDropdown.classList.remove('open');
+            state.selected.device = device;
+            renderCanvas();
+          });
+          deviceList.appendChild(item);
+        });
+      }
+
+      function buildCards(designs) {
+        const index = buildIndex(designs);
+        const cards = [];
+        index.groups.forEach(items => {
+          items.forEach(item => {
+            cards.push({ id: item.name, display: item, device: 'desktop' });
+          });
+        });
+        state.cards = cards;
+      }
+
+      function positionFloatingPanel() {
+        if (!state.selected) {
+          floatingPanel.classList.remove('active');
+          return;
+        }
+        const cardEl = cardElements.get(state.selected.id);
+        if (!cardEl) return;
+        const rect = cardEl.getBoundingClientRect();
+        floatingPanel.style.left = `${rect.right + 12}px`;
+        floatingPanel.style.top = `${rect.top}px`;
+      }
+
+      function adjustZoom(delta) {
+        state.zoom = Math.min(1.6, Math.max(0.4, state.zoom + delta));
+        applyTransform();
+      }
+
+      function setTheme() {
+        const theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+          document.body.setAttribute('data-theme', 'light');
+          themeIcon.innerHTML = getThemeIconSvg('light');
+        } else {
+          document.body.setAttribute('data-theme', 'dark');
+          themeIcon.innerHTML = getThemeIconSvg('dark');
+        }
+      }
+
+      function getToastIcon(type) {
+        if (type === 'success') return '<path d="M5 13l4 4L19 7"/>';
+        if (type === 'warning') return '<path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10 3h4l7 14H3z"/>';
+        if (type === 'error') return '<path d="M12 9v4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/>';
+        return '<circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>';
+      }
+
+      function showToast(message, type = 'info') {
+        const config = getToastConfig(type);
+        const toast = document.createElement('div');
+        toast.className = `toast ${config.tone}`;
+        toast.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2">${getToastIcon(type)}</svg><span>${message}</span>`;
+        toastContainer.appendChild(toast);
+        window.setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(6px)';
+          window.setTimeout(() => toast.remove(), 200);
+        }, config.duration);
+      }
+
+      function openConfirmModal() {
+        if (!state.selected) return;
+        const copy = getConfirmCopy(state.selected.display.name);
+        confirmTitle.textContent = copy.title;
+        confirmBody.textContent = copy.message;
+        confirmModal.classList.add('active');
+      }
+
+      function closeConfirmModal() {
+        confirmModal.classList.remove('active');
+      }
+
+      async function deleteSelected() {
+        if (!state.selected) return;
+        await fetch('/api/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: state.selected.display.path })
+        });
+        state.selected = null;
+        await loadIndex();
+        showToast('Deleted', 'success');
+      }
+
+      function setupPanControls() {
+        board.addEventListener('pointerdown', event => {
+          if (!state.spaceDown) return;
+          const startX = event.clientX;
+          const startY = event.clientY;
+          const originX = state.panX;
+          const originY = state.panY;
+
+          const onMove = moveEvent => {
+            state.panX = originX + (moveEvent.clientX - startX);
+            state.panY = originY + (moveEvent.clientY - startY);
+            applyTransform();
+          };
+
+          const onUp = () => {
+            board.removeEventListener('pointermove', onMove);
+            board.removeEventListener('pointerup', onUp);
+          };
+
+          board.addEventListener('pointermove', onMove);
+          board.addEventListener('pointerup', onUp);
+        });
+
+        window.addEventListener('keydown', event => {
+          if (event.code === 'Space') {
+            state.spaceDown = true;
+          }
+        });
+        window.addEventListener('keyup', event => {
+          if (event.code === 'Space') {
+            state.spaceDown = false;
+          }
+        });
+
+        board.addEventListener('wheel', event => {
+          if (!(event.metaKey || event.ctrlKey)) {
+            return;
+          }
+          event.preventDefault();
+          const delta = event.deltaY > 0 ? -0.05 : 0.05;
+          adjustZoom(delta);
+        }, { passive: false });
+      }
+
+      function setupDropdown(button, dropdown) {
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          dropdown.classList.toggle('open');
+        });
+      }
+
+      document.addEventListener('click', () => {
+        deviceDropdown.classList.remove('open');
+      });
+
+      async function loadIndex() {
+        const response = await fetch('/api/index');
+        const data = await response.json();
+        state.designs = data.designs;
+        buildCards(state.designs);
+        lastUpdated.textContent = `Last scan: ${new Date(data.generated_at).toLocaleString()}`;
+        renderCanvas();
+      }
+
+      searchInput.addEventListener('input', renderCanvas);
+      zoomOut.addEventListener('click', () => adjustZoom(-0.1));
+      zoomIn.addEventListener('click', () => adjustZoom(0.1));
+      zoomReset.addEventListener('click', () => {
+        state.zoom = 1;
+        applyTransform();
+      });
+      themeToggle.addEventListener('click', event => {
+        event.stopPropagation();
+        setTheme();
+      });
+      copyName.addEventListener('click', async () => {
+        if (!state.selected) return;
+        try {
+          await navigator.clipboard.writeText(state.selected.display.name);
+          showToast('Copied filename', 'success');
+        } catch (error) {
+          showToast('Copy failed', 'error');
+        }
+      });
+      openTab.addEventListener('click', () => {
+        if (!state.selected) return;
+        window.open(`/files/${encodeURIComponent(state.selected.display.path)}`, '_blank');
+      });
+      deleteFile.addEventListener('click', openConfirmModal);
+      confirmCancel.addEventListener('click', closeConfirmModal);
+      confirmModal.addEventListener('click', event => {
+        if (event.target === confirmModal) {
+          closeConfirmModal();
+        }
+      });
+      confirmOk.addEventListener('click', async () => {
+        await deleteSelected();
+        closeConfirmModal();
+      });
+
+      setupDropdown(deviceButton, deviceDropdown);
+
+      setTheme();
+      applyTransform();
+      setupPanControls();
+      loadIndex();
+    </script>
+  </body>
+</html>

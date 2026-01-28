@@ -2,7 +2,7 @@
 
 ## Start the dashboard
 ```
-python3 /Users/dw/.codex/skills/super-design/scripts/serve_dashboard.py --root .superdesign/design_iterations --port 3077 --open
+python3 /Users/dw/.codex/skills/super-design/scripts/serve_dashboard.py --root .superdesign --port 3077 --open
 ```
 
 ## Stop the dashboard
@@ -18,7 +18,7 @@ You can copy the template from:
 Create `design_iterations/start_board.sh`:
 ```
 #!/usr/bin/env bash
-python3 /Users/dw/.codex/skills/super-design/scripts/serve_dashboard.py --root .superdesign/design_iterations --port 3077 --open
+python3 /Users/dw/.codex/skills/super-design/scripts/serve_dashboard.py --root .superdesign --port 3077 --open
 ```
 Then run:
 ```

@@ -66,10 +66,18 @@ def parse_design_meta(file_path: Path, root: Path) -> dict:
     }
 
 
+def resolve_scan_root(root: Path) -> Path:
+    scan_root = root / 'design_iterations'
+    if scan_root.exists() and scan_root.is_dir():
+        return scan_root
+    return root
+
+
 def build_index(root: Path) -> dict:
     designs = []
+    scan_root = resolve_scan_root(root)
     for ext in ('.html', '.svg'):
-        for file_path in root.rglob(f'*{ext}'):
+        for file_path in scan_root.rglob(f'*{ext}'):
             if file_path.is_file():
                 designs.append(parse_design_meta(file_path, root))
 
@@ -163,7 +171,7 @@ def run_server(root: Path, host: str, port: int, open_browser: bool) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description='Serve SuperDesign dashboard locally.')
-    parser.add_argument('--root', default='.superdesign/design_iterations', help='Prototype directory root')
+    parser.add_argument('--root', default='.superdesign', help='Prototype directory root')
     parser.add_argument('--host', default='127.0.0.1', help='Host to bind')
     parser.add_argument('--port', type=int, default=3077, help='Port to bind')
     parser.add_argument('--open', action='store_true', help='Open browser automatically')

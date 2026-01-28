@@ -15,7 +15,7 @@
 ## JSON fields (from /api/index)
 ```
 {
-  "root": ".superdesign/design_iterations",
+  "root": ".superdesign",
   "generated_at": "2026-01-28T00:00:00Z",
   "designs": [
     {

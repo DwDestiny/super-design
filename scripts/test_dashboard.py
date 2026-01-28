@@ -11,14 +11,16 @@ import serve_dashboard
 def test_build_index_paths_are_relative() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
-        (root / 'alpha_A_1.html').write_text('<html></html>', encoding='utf-8')
-        (root / 'nested').mkdir()
-        (root / 'nested' / 'beta_B_2.html').write_text('<html></html>', encoding='utf-8')
+        design_root = root / 'design_iterations'
+        design_root.mkdir()
+        (design_root / 'alpha_A_1.html').write_text('<html></html>', encoding='utf-8')
+        (design_root / 'nested').mkdir()
+        (design_root / 'nested' / 'beta_B_2.html').write_text('<html></html>', encoding='utf-8')
 
         data = serve_dashboard.build_index(root)
         paths = [item['path'] for item in data['designs']]
-        assert 'alpha_A_1.html' in paths
-        assert 'nested/beta_B_2.html' in paths
+        assert 'design_iterations/alpha_A_1.html' in paths
+        assert 'design_iterations/nested/beta_B_2.html' in paths
         assert all(not p.startswith('/') for p in paths)
 
 

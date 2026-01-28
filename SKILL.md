@@ -47,7 +47,7 @@ See references/workflow.md for the detailed procedure and constraints.
 - Command (from project root):
   - `./.superdesign/design_iterations/start_board.sh`
 - Fallback (if the script is unavailable):
-  - `python3 /path/to/skill/scripts/serve_dashboard.py --root <project>/.superdesign/design_iterations --port 3077`
+  - `python3 /path/to/skill/scripts/serve_dashboard.py --root <project>/.superdesign --port 3077`
 - If the port is in use:
   - Re-run with a different port, e.g. `--port 3088`
 

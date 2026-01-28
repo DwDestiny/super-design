@@ -267,6 +267,7 @@
         border-radius: 8px;
         cursor: pointer;
         font-size: 12px;
+        text-align: center;
       }
       .dropdown ul li:hover {
         background: rgba(99, 102, 241, 0.15);
@@ -453,7 +454,6 @@
       <div class="board" id="board">
         <div class="canvas" id="canvas"></div>
         <div class="floating-panel" id="floatingPanel">
-          <span class="floating-label" id="selectedMeta">Select</span>
           <div class="floating-actions">
             <div class="dropdown" id="deviceDropdown">
               <button id="deviceButton" class="device-button" title="Switch device">
@@ -491,6 +491,7 @@
         pickInitialVariant,
         computeGridPositions,
         computeCardSize,
+        computeGridCellSize,
         getDeviceLabel,
         getCardDevice,
         getDeviceIconSvg,
@@ -510,7 +511,6 @@
       const themeIcon = document.getElementById('themeIcon');
 
       const floatingPanel = document.getElementById('floatingPanel');
-      const selectedMeta = document.getElementById('selectedMeta');
       const deviceButton = document.getElementById('deviceButton');
       const deviceList = document.getElementById('deviceList');
       const deviceDropdown = document.getElementById('deviceDropdown');
@@ -531,7 +531,7 @@
         designs: [],
         cards: [],
         selected: null,
-        zoom: 1,
+        zoom: 0.4,
         panX: 0,
         panY: 0,
         previewScale: 1,
@@ -673,7 +673,9 @@
         const query = searchInput.value.trim().toLowerCase();
         const filtered = state.cards.filter(card => card.display.name.toLowerCase().includes(query));
 
-        const positions = computeGridPositions(filtered.length, 3, 900, 700, 28);
+        const previewScale = computePreviewScale();
+        const cellSize = computeGridCellSize(filtered, deviceSizes, previewScale, chrome.height, chrome.width);
+        const positions = computeGridPositions(filtered.length, 3, cellSize.width, cellSize.height, 28);
         const activeIds = new Set(filtered.map(card => card.id));
 
         filtered.forEach((card, index) => {
@@ -710,7 +712,6 @@
           card.device = 'desktop';
         }
         state.selected = card;
-        selectedMeta.textContent = card.display.name;
         floatingPanel.classList.add('active');
         updateSelectionUI();
         renderDeviceControls();

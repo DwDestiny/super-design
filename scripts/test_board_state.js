@@ -5,6 +5,7 @@ import {
   pickInitialVariant,
   computeGridPositions,
   computeCardSize,
+  computeGridCellSize,
   getDeviceLabel,
   getCardDevice,
   getDeviceIconSvg,
@@ -32,6 +33,20 @@ assert.strictEqual(positions.length, 3);
 
 const size = computeCardSize({ width: 1000, height: 800 }, 1, 38, 0);
 assert.deepStrictEqual(size, { width: 1000, height: 838 });
+
+const deviceSizes = {
+  desktop: { width: 1440, height: 900 },
+  tablet: { width: 1024, height: 768 },
+  mobile: { width: 390, height: 844 }
+};
+const cellSize = computeGridCellSize(
+  [{ device: 'desktop' }, { device: 'tablet' }],
+  deviceSizes,
+  1,
+  38,
+  0
+);
+assert.deepStrictEqual(cellSize, { width: 1440, height: 938 });
 
 assert.strictEqual(getDeviceLabel('tablet'), 'Tablet');
 assert.strictEqual(getCardDevice('unknown'), 'desktop');

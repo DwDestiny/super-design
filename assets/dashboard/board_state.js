@@ -70,6 +70,27 @@ export function computeCardSize(device, previewScale, chromeHeight, chromeWidth)
   return { width, height };
 }
 
+export function computeGridCellSize(cards, deviceSizes, previewScale, chromeHeight, chromeWidth) {
+  if (!Array.isArray(cards) || cards.length === 0) {
+    return { width: 900, height: 700 };
+  }
+  let maxWidth = 0;
+  let maxHeight = 0;
+  const fallbackDevice = deviceSizes?.desktop;
+  cards.forEach(card => {
+    const deviceKey = getCardDevice(card?.device);
+    const device = deviceSizes?.[deviceKey] || fallbackDevice;
+    if (!device) return;
+    const size = computeCardSize(device, previewScale, chromeHeight, chromeWidth);
+    if (size.width > maxWidth) maxWidth = size.width;
+    if (size.height > maxHeight) maxHeight = size.height;
+  });
+  if (!maxWidth || !maxHeight) {
+    return { width: 900, height: 700 };
+  }
+  return { width: maxWidth, height: maxHeight };
+}
+
 export function getDeviceLabel(key) {
   if (key === 'desktop') return 'Desktop';
   if (key === 'tablet') return 'Tablet';

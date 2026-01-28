@@ -56,6 +56,10 @@ See references/workflow.md for the detailed procedure and constraints.
   - `GET /api/index` from the local board server
 
 ## Naming conventions (required)
+- Slug rules:
+  - Use lowercase ASCII only.
+  - Replace spaces with `-`.
+  - Remove symbols; keep letters, numbers, and `-` only.
 - Theme CSS file:
   - `/.superdesign/themes/{project_slug}_{variant}.css`
 - First-page HTML variants:
@@ -64,6 +68,11 @@ See references/workflow.md for the detailed procedure and constraints.
   - `/.superdesign/design_iterations/{page_slug}_C_1.html`
 - Subsequent pages (single chosen style only):
   - `/.superdesign/design_iterations/{page_slug}_{chosen_variant}_{n}.html`
+
+## Theme linking rule
+- Every HTML page must include the selected theme CSS via a `<link>` tag.
+- Use the exact path in the workspace:
+  - `/.superdesign/themes/{project_slug}_{chosen_variant}.css`
 
 ## Integration notes
 - The board server is only meaningful after HTML pages exist.

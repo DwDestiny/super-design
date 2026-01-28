@@ -45,6 +45,10 @@
 ## Directory and naming rules (all steps)
 - Base workspace directory:
   - .superdesign/
+- Slug rules:
+  - Use lowercase ASCII only.
+  - Replace spaces with `-`.
+  - Remove symbols; keep letters, numbers, and `-` only.
 - Theme outputs (step 2):
   - .superdesign/themes/{project_slug}_{variant}.css
 - HTML outputs (step 4 and after):
@@ -52,6 +56,10 @@
 - Board script location (step 5):
   - .superdesign/design_iterations/start_board.sh
   - .superdesign/design_iterations/start_board.ps1
+
+## Theme linking rule
+- Every HTML page must include the selected theme CSS via a <link> tag:
+  - /.superdesign/themes/{project_slug}_{chosen_variant}.css
 
 ## After selection
 - Ask the user to pick Variant A/B/C.

@@ -21,6 +21,8 @@
   - Use the theme variable specification from references/theme-spec.md.
   - Select typography from the approved Google Fonts list in references/design-guidelines.md.
   - Be clearly labeled (Variant A/B/C) with a short rationale.
+  - Use 4pt or 8pt spacing system and touch targets ≥ 48px.
+  - Use real icons and real open-source images for fidelity.
 
 ## Motion design requirements
 - Define micro-interactions and transitions for key UI elements.
@@ -45,6 +47,8 @@
 ## Directory and naming rules (all steps)
 - Base workspace directory:
   - .superdesign/
+- Default UI baseline CSS:
+  - .superdesign/design_iterations/default_ui_darkmode.css (copy from references/default_ui_darkmode.css)
 - Slug rules:
   - Use lowercase ASCII only.
   - Replace spaces with `-`.
@@ -60,6 +64,7 @@
 ## Theme linking rule
 - Every HTML page must include the selected theme CSS via a <link> tag:
   - /.superdesign/themes/{project_slug}_{chosen_variant}.css
+- If default_ui_darkmode.css exists, load it before the chosen theme CSS.
 
 ## After selection
 - Ask the user to pick Variant A/B/C.

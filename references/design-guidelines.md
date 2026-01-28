@@ -14,6 +14,11 @@
 ## Responsiveness
 - Designs must be responsive by default.
 
+## Spacing system
+- Use a 4pt or 8pt spacing system only.
+- All margins, padding, line-heights, and element sizes must be exact multiples.
+- Touch targets must be at least 48x48px.
+
 ## Component/background contrast
 - For components, posters, or any single-element design (not a full app screen), ensure the background contrasts the component well:
   - Light component -> dark background
@@ -50,9 +55,33 @@
 ## CSS precedence
 - Add !important to any CSS property that could be overridden by Tailwind/Flowbite (e.g., body, h1, etc.).
 
-## Images
-- Use only known public URLs (e.g., Unsplash, placehold.co). Do not fabricate URLs.
+## Images (high-fidelity required)
+- Always use real, open-source image URLs to replace placeholders.
+- Do not fabricate URLs.
+- Recommended sources (direct image links only):
+  - https://images.unsplash.com/ (Unsplash)
+  - https://images.pexels.com/ (Pexels)
 
-## Icons
-- Prefer Lucide icons. Include:
+## Icons (must use real icons)
+- Do not use empty placeholders for icons.
+- Choose one open-source icon library and use real icons throughout.
+- Recommended libraries by style:
+  - Minimal / SaaS: Lucide (clean outline)
+    - https://unpkg.com/lucide@latest/dist/umd/lucide.min.js
+  - Apple-like / rounded: Heroicons (outline/solid)
+    - Use SVG exports from https://heroicons.com/
+  - Enterprise / filled: Material Symbols
+    - https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined
+  - Brand / social: Simple Icons
+    - https://simpleicons.org/
+  - Creative / playful: Phosphor Icons
+    - https://unpkg.com/@phosphor-icons/web
+- For Lucide, include and activate:
   - <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  - lucide.createIcons();
+
+## Interaction & motion
+- Use subtle micro-interactions: hover, focus, active, and press states.
+- Keep motion under 200ms for UI feedback; avoid large scale jumps.
+- Buttons, cards, and menus should all have hover feedback.
+- Prefer opacity, shadow, and border color transitions to heavy transforms.

@@ -50,6 +50,8 @@ See references/workflow.md for the detailed procedure and constraints.
   - `/.superdesign/design_iterations/` (project workspace)
 - Theme CSS outputs:
   - `/.superdesign/themes/` (project workspace)
+- Default UI baseline CSS:
+  - `/.superdesign/design_iterations/default_ui_darkmode.css` (copy from references/default_ui_darkmode.css)
 - Board UI assets:
   - `assets/dashboard/` (inside this skill package)
 - Data index endpoint:
@@ -73,6 +75,12 @@ See references/workflow.md for the detailed procedure and constraints.
 - Every HTML page must include the selected theme CSS via a `<link>` tag.
 - Use the exact path in the workspace:
   - `/.superdesign/themes/{project_slug}_{chosen_variant}.css`
+- If `default_ui_darkmode.css` exists, load it first, then load the chosen theme CSS after it.
+
+## Visual fidelity rules
+- Use open-source images (real URLs) instead of placeholders.
+- Use real icons from open-source icon libraries; no empty placeholders.
+- Use 4pt or 8pt spacing system and keep touch targets ≥ 48px.
 
 ## Integration notes
 - The board server is only meaningful after HTML pages exist.
@@ -97,6 +105,7 @@ See references/workflow.md for the detailed procedure and constraints.
 
 ## References
 - references/design-guidelines.md
+- references/default_ui_darkmode.css
 - references/theme-spec.md
 - references/theme-templates.md
 - references/workflow.md

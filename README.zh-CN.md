@@ -2,11 +2,11 @@
 
 [中文](README.zh-CN.md) | [English](README.md)
 
-Super Design Skill 是一个具备自主探索能力的高保真 UI 设计工作流。它会在第一轮输出多套明显不同的布局与风格方向，让开发者无需掌握设计术语，也能直接选择最喜欢的方向继续推进。
+Super Design Skill 是一个具备自主探索能力的高保真 UI 设计工作流。它会自动探索最优布局、配色与主题，让开发者无需掌握设计术语，也能直接选择最喜欢的方向继续推进。
 
 ![Board overview](assets/readme/board-overview.png)
 
-无需理解任何设计术语。Agent 会结合你的业务背景自动探索最合适的排版、配色与视觉方向，你只需凭直觉选择喜欢的版本，后续设计自动统一推进。
+无需理解任何设计术语。Agent 会结合你的业务背景自动探索最合适的排版、配色与视觉方向，你只需凭直觉选择喜欢的版本，后续设计自动统一推进，适用于 Web、App 与移动端等多端场景。
 
 ## 适合谁
 - 需要快速获得专业级 UI 方向
@@ -22,7 +22,7 @@ Super Design Skill 是一个具备自主探索能力的高保真 UI 设计工作
 ![Board example 4](assets/readme/board-example-4.png)
 
 ## 你会得到什么
-- **多方向探索**：不是小变体，而是布局、排版、风格的明显差异。
+- **多方向探索**：不是小变体，而是布局、配色与主题的明显差异。
 - **第一版可选**：第一屏给出多套选择。
 - **清晰产出结构**：统一命名与目录规范。
 - **一站式看板**：集中查看与对比所有版本。
@@ -38,13 +38,15 @@ Super Design Skill 是一个具备自主探索能力的高保真 UI 设计工作
 
 完整细则见 `references/workflow.md`。
 
-## 快速开始
-1) 将本目录放入 Codex 的 `skills` 目录（例如：`~/.codex/skills/super-design`）。
-2) 使用技能名称：`super-design`。
-3) 生成 HTML 后运行看板脚本：
-   - `./.superdesign/design_iterations/start_board.sh`
-4) 打开终端输出的本地地址即可预览。
-5) 若使用 runbook 命令，请将 `<SKILL_DIR>` 与 `<PROJECT_ROOT>` 替换为本地实际路径。
+## 安装与快速开始
+请通过 Skillmaps 安装与启动。Skillmaps 同时提供 Skillmap Pro 应用，可一键安装到 Trae、Cursor、Antigravity、Opencode、Gemini CLI、Codex、Claude Code 等 IDE。
+
+[Skillmaps：Super Design](https://skillmaps.net/detail?id=DwDestiny-super-design-main-1769667338)
+
+Skillmaps 生态展示：
+
+![Skillmaps 市场](assets/readme/marketplace.png)
+![Skillmap Pro 管理器](assets/readme/skill-manager.png)
 
 ## 产出结构
 ```

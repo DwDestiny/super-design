@@ -2,11 +2,11 @@
 
 [中文](README.zh-CN.md) | [English](README.md)
 
-Super Design Skill is a high‑fidelity UI design workflow with autonomous exploration. It generates multiple distinct layout and style directions so you can choose by intuition without needing design jargon or deep design expertise.
+Super Design Skill is a high‑fidelity UI design workflow with autonomous exploration. It automatically discovers the most suitable layouts, color systems, and themes so you can choose by intuition without needing design jargon or deep design expertise.
 
 ![Board overview](assets/readme/board-overview.png)
 
-No design terms required. The agent studies your product context and automatically explores the most suitable layout systems, color palettes, and visual directions. You simply pick the version you like and let it carry the rest of the project.
+No design terms required. The agent studies your product context and automatically explores the most suitable layout systems, color palettes, and visual directions. You simply pick the version you like and let it carry the rest of the project across web, app, and mobile surfaces.
 
 ## Why it exists
 - You need real, production‑grade UI directions fast.
@@ -22,7 +22,7 @@ These screens are generated from the same brief but intentionally explore differ
 ![Board example 4](assets/readme/board-example-4.png)
 
 ## What you get
-- Autonomous exploration of **distinct** layout and visual directions.
+- Autonomous exploration of **distinct** layout, color, and theme directions.
 - A decision‑ready first page: multiple directions to pick from.
 - Consistent file structure with clear naming.
 - A local board to review and compare everything in one place.
@@ -44,13 +44,13 @@ These screens are generated from the same brief but intentionally explore differ
 
 Full details live in `references/workflow.md`.
 
-## Quick start
-1) Place this folder under your Codex `skills` directory (example: `~/.codex/skills/super-design`).
-2) Use the skill name: `super-design`.
-3) After HTML is generated, start the board:
-   - `./.superdesign/design_iterations/start_board.sh`
-4) Open the local URL printed in the terminal.
-5) If you use the runbook commands, replace `<SKILL_DIR>` and `<PROJECT_ROOT>` with your local paths.
+## Installation & quick start
+Install and launch from Skillmaps. It also provides the Skillmap Pro app for one‑click installation to Trae, Cursor, Antigravity, Opencode, Gemini CLI, Codex, and Claude Code.
+
+[Skillmaps: Super Design](https://skillmaps.net/detail?id=DwDestiny-super-design-main-1769667338)
+
+![Skillmaps marketplace](assets/readme/marketplace.png)
+![Skillmap Pro skill manager](assets/readme/skill-manager.png)
 
 ## Output structure
 ```

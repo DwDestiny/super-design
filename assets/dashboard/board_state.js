@@ -169,6 +169,14 @@ export function getDefaultColumns() {
   return 3;
 }
 
+export function normalizeDeviceSelection(device) {
+  return getCardDevice(device);
+}
+
+export function getDropdownEventType() {
+  return 'pointerdown';
+}
+
 export function buildLayoutPayload(items, cellSize) {
   return {
     items: items || {},

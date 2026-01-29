@@ -497,6 +497,8 @@
         buildFileUrl,
         getLayoutStorageKey,
         getDefaultColumns,
+        normalizeDeviceSelection,
+        getDropdownEventType,
         normalizeLayout,
         buildLayoutPayload,
         resolveLayoutPositions,
@@ -524,6 +526,7 @@
       const deviceList = document.getElementById('deviceList');
       const deviceDropdown = document.getElementById('deviceDropdown');
       const deviceIcon = document.getElementById('deviceIcon');
+      const dropdownEvent = getDropdownEventType();
       const copyName = document.getElementById('copyName');
       const openTab = document.getElementById('openTab');
       const deleteFile = document.getElementById('deleteFile');
@@ -747,9 +750,10 @@
         ['desktop', 'tablet', 'mobile'].forEach(device => {
           const item = document.createElement('li');
           item.textContent = getDeviceLabel(device);
-          item.addEventListener('click', () => {
+          item.addEventListener(dropdownEvent, event => {
+            event.stopPropagation();
             deviceDropdown.classList.remove('open');
-            state.selected.device = device;
+            state.selected.device = normalizeDeviceSelection(device);
             renderCanvas();
           });
           deviceList.appendChild(item);
@@ -884,9 +888,13 @@
       }
 
       function setupDropdown(button, dropdown) {
-        button.addEventListener('click', event => {
+        button.addEventListener(dropdownEvent, event => {
           event.stopPropagation();
+          event.preventDefault();
           dropdown.classList.toggle('open');
+        });
+        dropdown.addEventListener(dropdownEvent, event => {
+          event.stopPropagation();
         });
       }
 
@@ -896,7 +904,7 @@
         });
       }
 
-      document.addEventListener('click', () => {
+      document.addEventListener(dropdownEvent, () => {
         deviceDropdown.classList.remove('open');
       });
 

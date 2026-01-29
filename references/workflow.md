@@ -69,7 +69,7 @@
 - Provide a brief note on icon/text strategy (based on references/icon-text-guideline.md).
 - Confirm mock content coverage (no placeholders, realistic data and assets).
 - Confirm alignment with the user’s feature plan (no added modules).
- - State explicitly that placeholders are fully replaced with mock content.
+- State explicitly that placeholders are fully replaced with mock content.
 
 ## Board server notice
 - After generating the first 3 HTML variants, create a one-click script in the prototype directory:

@@ -10,6 +10,8 @@ import {
   buildLayoutPayload,
   getLayoutStorageKey,
   getDefaultColumns,
+  normalizeDeviceSelection,
+  getDropdownEventType,
   buildFileUrl,
   resolveLayoutPositions,
   getDeviceLabel,
@@ -105,5 +107,8 @@ assert.ok(getConfirmCopy('design-home.html').message.includes('design-home.html'
 assert.strictEqual(buildFileUrl('design_iterations/demo.html'), '/files/design_iterations/demo.html');
 assert.strictEqual(getLayoutStorageKey(), 'superdesign-board-layout');
 assert.strictEqual(getDefaultColumns(), 3);
+assert.strictEqual(normalizeDeviceSelection('tablet'), 'tablet');
+assert.strictEqual(normalizeDeviceSelection('unknown'), 'desktop');
+assert.strictEqual(getDropdownEventType(), 'pointerdown');
 
 console.log('OK');

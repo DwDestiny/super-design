@@ -6,6 +6,9 @@ import {
   computeGridPositions,
   computeCardSize,
   computeGridCellSize,
+  normalizeLayout,
+  buildLayoutPayload,
+  resolveLayoutPositions,
   getDeviceLabel,
   getCardDevice,
   getDeviceIconSvg,
@@ -47,6 +50,44 @@ const cellSize = computeGridCellSize(
   0
 );
 assert.deepStrictEqual(cellSize, { width: 1440, height: 938 });
+
+const emptyCellSize = computeGridCellSize([], deviceSizes, 1, 38, 0);
+assert.deepStrictEqual(emptyCellSize, { width: 1440, height: 938 });
+
+const layoutPayload = buildLayoutPayload({ a: { x: 10, y: 20 } }, { width: 1200, height: 800 });
+assert.strictEqual(layoutPayload.cell.width, 1200);
+assert.strictEqual(layoutPayload.items.a.x, 10);
+
+const normalizedEmpty = normalizeLayout('', { width: 1200, height: 800 });
+assert.strictEqual(normalizedEmpty.useStored, false);
+
+const normalizedLegacy = normalizeLayout(JSON.stringify({ a: { x: 1, y: 2 } }), { width: 1200, height: 800 });
+assert.strictEqual(normalizedLegacy.useStored, false);
+
+const normalizedMatch = normalizeLayout(
+  JSON.stringify({
+    items: { a: { x: 1, y: 2 } },
+    cell: { width: 1200, height: 800 }
+  }),
+  { width: 1200, height: 800 }
+);
+assert.strictEqual(normalizedMatch.useStored, true);
+
+const normalizedMismatch = normalizeLayout(
+  JSON.stringify({
+    items: { a: { x: 1, y: 2 } },
+    cell: { width: 900, height: 700 }
+  }),
+  { width: 1200, height: 800 }
+);
+assert.strictEqual(normalizedMismatch.useStored, false);
+
+const layoutCards = [{ id: 'card-1' }, { id: 'card-2' }, { id: 'card-3' }];
+const layoutState = { useStored: true, items: { 'card-1': { x: 0, y: 0 }, 'card-2': { x: 0, y: 0 } } };
+const resolved = resolveLayoutPositions(layoutCards, 2, 100, 100, 10, layoutState);
+assert.deepStrictEqual(resolved[0], { x: 0, y: 0 });
+assert.deepStrictEqual(resolved[1], { x: 110, y: 0 });
+assert.deepStrictEqual(resolved[2], { x: 0, y: 110 });
 
 assert.strictEqual(getDeviceLabel('tablet'), 'Tablet');
 assert.strictEqual(getCardDevice('unknown'), 'desktop');

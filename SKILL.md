@@ -14,32 +14,43 @@ Use a structured, approval-gated workflow, strict visual guidelines, and a local
 - The user requests a specific UI style, theme, or high-quality visual output.
 
 ## Workflow (must follow in order)
-1. Layout design: produce an ASCII wireframe.
-2. Theme design: propose 3 distinct style directions based on the user’s business context.
-3. Motion design: specify micro-interactions and transitions aligned to the chosen style.
-4. Generate the first single-page HTML design in 3 style variants.
-5. Tell the user how to start the local board server and view the dashboard.
-6. After the user selects a style, all subsequent pages must follow the chosen style.
+1. Structure intent mapping (internal):
+   - Translate PRD into page-by-page intent and hierarchy.
+   - Decide each page’s layout direction internally (no user confirmation).
+2. Style exploration (external):
+   - If the user specifies a preferred style or layout, generate 4 directions within that scope.
+   - Additionally, explore 3–4 alternative directions outside the user’s scope and explain why they may be stronger.
+   - If the user does not specify a style, generate 4 clearly different directions for the first page.
+   - Each direction must change layout, typography, density, and component language together.
+3. Motion design:
+   - Define micro-interactions that reinforce the selected style direction.
+4. First page output:
+   - Deliver 4 style directions as 4 HTML files.
+   - Let the user pick the preferred direction.
+5. Board preview:
+   - Start the board and show all 4 directions in one view.
+6. Single direction continuation:
+   - Apply the selected direction consistently to all remaining pages.
 7. Require explicit user approval before moving to the next step.
 
 See references/workflow.md for the detailed procedure and constraints.
 
 ## Step-to-tool mapping
-1. Layout design:
-   - No tools required. Output ASCII wireframe only.
-2. Theme design:
-   - Write theme CSS files into `/.superdesign/themes/`.
-   - Copy the default baseline CSS if it is not present.
+1. Structure intent mapping:
+   - No tools required; keep internal notes only.
+2. Style exploration:
+   - Prepare theme CSS directions under `/.superdesign/themes/`.
+   - Ensure baseline CSS exists.
 3. Motion design:
    - Document micro-interaction rules; no tools required.
-4. HTML generation:
-   - Write HTML files into `/.superdesign/design_iterations/`.
-   - Link the baseline CSS first (if present), then the chosen theme CSS.
+4. First page output:
+   - Write 4 HTML files into `/.superdesign/design_iterations/`.
+   - Link baseline CSS first (if present), then theme CSS.
 5. Board preview:
    - Create the one-click script in `/.superdesign/design_iterations/`.
-   - Start the board server so the user can compare variants.
+   - Start the board server so the user can compare directions.
 6. After selection:
-   - Continue with single-style HTML outputs only.
+   - Continue with a single selected direction only.
 ## Tools & Commands (when to use)
 ### Local board server
 - Use after step 4 (first-page HTML variants generated) to let the user compare and pick a style.
@@ -81,18 +92,16 @@ See references/workflow.md for the detailed procedure and constraints.
   - Replace spaces with `-`.
   - Remove symbols; keep letters, numbers, and `-` only.
 - Theme CSS file:
-  - `/.superdesign/themes/{project_slug}_{variant}.css`
-- First-page HTML variants:
-  - `/.superdesign/design_iterations/{page_slug}_A_1.html`
-  - `/.superdesign/design_iterations/{page_slug}_B_1.html`
-  - `/.superdesign/design_iterations/{page_slug}_C_1.html`
+  - `/.superdesign/themes/{project_slug}_{style_name}.css`
+- First-page HTML directions:
+  - `/.superdesign/design_iterations/{page_slug}_{style_name}_1.html`
 - Subsequent pages (single chosen style only):
-  - `/.superdesign/design_iterations/{page_slug}_{chosen_variant}_{n}.html`
+  - `/.superdesign/design_iterations/{page_slug}_{style_name}_{n}.html`
 
 ## Theme linking rule
 - Every HTML page must include the selected theme CSS via a `<link>` tag.
 - Use the exact path in the workspace:
-  - `/.superdesign/themes/{project_slug}_{chosen_variant}.css`
+  - `/.superdesign/themes/{project_slug}_{style_name}.css`
 - If `default_ui_darkmode.css` exists, load it first, then load the chosen theme CSS after it.
 
 ## Visual fidelity rules
@@ -100,29 +109,37 @@ See references/workflow.md for the detailed procedure and constraints.
 - Use real icons from open-source icon libraries; no empty placeholders.
 - Use 4pt or 8pt spacing system and keep touch targets ≥ 48px.
 - Do not use emoji in any UI text, labels, or icons.
+- Follow references/icon-text-guideline.md to decide icon-only vs. icon + text usage.
 
-## Style variation guidance (non-formula)
-- The 3 outputs must be clearly different design styles, not minor variants.
-- Style differences must be obvious at first glance so the user can pick a direction.
-- Vary at least two of these aspects per variant:
+## Style exploration guidance (non-formula)
+- The 4 directions must be clearly different in design intent, not minor variants.
+- Differences should be obvious at first glance so the user can pick a direction confidently.
+- Each direction should combine multiple changes together:
+  - Layout structure and information flow
   - Typography pairing and hierarchy emphasis
-  - Layout density and whitespace rhythm
-  - Component styling (radius, borders, shadow weight)
-  - Accent usage and visual focal points
-  - Illustration/image treatment and cropping
+  - Density and whitespace rhythm
+  - Component language (card vs. non-card, border vs. shadow)
+  - Accent usage and focal points
+  - Image treatment and cropping
+- If user preferences are present, include a short rationale for any alternative directions outside that scope.
+
+## Exploration mindset
+- Design should be bold and exploratory, not restricted to common patterns.
+- Propose fresh but usable structures and interactions grounded in product logic.
+- Avoid safe, repetitive templates; pursue novelty when it improves clarity or delight.
 
 ## Integration notes
 - The board server is only meaningful after HTML pages exist.
 - For multi-page projects, keep the selected style consistent across all subsequent pages.
 - Always tell the user the local URL printed by the server and how to stop it.
- - If the board script is missing, generate it before asking the user to run it.
+- If the board script is missing, generate it before asking the user to run it.
 
 ## Skill tree
 - Design workflow
-  - ASCII wireframing and layout decomposition
-  - 3-variant theme recommendation and selection
+  - Structure intent mapping (internal)
+  - 4-direction style exploration and selection
   - Motion and micro-interactions
-  - 3-variant first page, single-style continuation
+  - First page multi-direction output, single-direction continuation
   - Local board server usage
 - Design guidelines
   - Color, typography, responsiveness
@@ -136,6 +153,7 @@ See references/workflow.md for the detailed procedure and constraints.
 ## References
 - references/design-guidelines.md
 - references/default_ui_darkmode.css
+- references/icon-text-guideline.md
 - references/theme-spec.md
 - references/theme-templates.md
 - references/workflow.md

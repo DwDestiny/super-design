@@ -1,29 +1,32 @@
 # Workflow (SuperDesign)
 
 ## Mandatory sequence
-1. Layout design
-2. Theme design (3 recommended variants based on business context)
-3. Motion design (aligned to the chosen style)
-4. Generate the first single-page HTML design in 3 variants
+1. Structure intent mapping (internal)
+2. Style exploration (4 distinct directions)
+3. Motion design (aligned to the selected direction)
+4. Generate the first single-page HTML in 4 directions
 5. Write a one-click board script into the prototype directory and tell the user how to run it
-6. User selects a preferred variant
-7. All subsequent pages follow the selected style
+6. User selects a preferred direction
+7. All subsequent pages follow the selected direction
 8. Require explicit user approval before moving to the next step
 
-## Layout design requirements
-- Present the layout as an ASCII wireframe.
-- Include the main UI regions and components.
-- Provide at least one structural variant if it improves clarity.
+## Structure intent mapping (internal)
+- Use PRD to define each page’s intent and hierarchy.
+- Decide layout direction internally; do not ask the user to confirm layout.
+- Keep this as internal reasoning, not an external deliverable.
 
-## Theme design requirements (3 variants)
-- Recommend 3 clearly different style directions based on the user’s business characteristics.
-- The differences must be obvious at first glance (not just color changes).
-- Each variant must:
+## Style exploration requirements (4 directions)
+- Recommend 4 clearly different style directions based on product attributes, target audience, and usage context.
+- If the user specifies a preferred style or layout, generate 4 directions within that scope.
+- Additionally, explore 3–4 alternative directions outside the user’s scope and explain why they may be stronger.
+- Differences must be obvious at first glance (not just color changes).
+- Each direction must:
   - Use the theme variable specification from references/theme-spec.md.
   - Select typography from the approved Google Fonts list in references/design-guidelines.md.
-  - Be clearly labeled (Variant A/B/C) with a short rationale.
+  - Be clearly labeled with a short rationale.
   - Use 4pt or 8pt spacing system and touch targets ≥ 48px.
   - Use real icons and real open-source images for fidelity.
+  - Apply icon/text decision guidance from references/icon-text-guideline.md.
 
 ## Motion design requirements
 - Define micro-interactions and transitions for key UI elements.
@@ -31,11 +34,9 @@
 
 ## HTML output constraints (first page)
 - Output a single HTML page for one screen only.
-- For the first page, generate 3 HTML variants aligned to the 3 recommended styles.
+- For the first page, generate 4 HTML directions aligned to the 4 recommended styles.
 - Use the file naming convention:
-  - .superdesign/design_iterations/{page_slug}_A_1.html
-  - .superdesign/design_iterations/{page_slug}_B_1.html
-  - .superdesign/design_iterations/{page_slug}_C_1.html
+  - .superdesign/design_iterations/{page_slug}_{style_name}_1.html
 - Reference the theme CSS file created in the Theme step.
 
 ## Board server notice
@@ -55,7 +56,7 @@
   - Replace spaces with `-`.
   - Remove symbols; keep letters, numbers, and `-` only.
 - Theme outputs (step 2):
-  - .superdesign/themes/{project_slug}_{variant}.css
+  - .superdesign/themes/{project_slug}_{style_name}.css
 - HTML outputs (step 4 and after):
   - .superdesign/design_iterations/{page_slug}_{variant}_{n}.html
 - Board script location (step 5):
@@ -64,16 +65,20 @@
 
 ## Theme linking rule
 - Every HTML page must include the selected theme CSS via a <link> tag:
-  - /.superdesign/themes/{project_slug}_{chosen_variant}.css
+  - /.superdesign/themes/{project_slug}_{style_name}.css
 - If default_ui_darkmode.css exists, load it before the chosen theme CSS.
 
 ## After selection
-- Ask the user to pick Variant A/B/C.
-- Continue all remaining pages using only the selected style.
-- Do not re-offer multiple variants unless the user asks.
+- Ask the user to pick one direction (from both in-scope and alternative proposals).
+- Continue all remaining pages using only the selected direction.
+- Do not re-offer multiple directions unless the user asks.
+
+## Exploration mindset
+- Be bold and exploratory; avoid defaulting to common templates.
+- Propose fresh but reasonable layouts and interactions with clear rationale.
 
 ## Approval checkpoints
-- After presenting the ASCII wireframe, ask for confirmation.
-- Do not proceed to Theme until the user approves Layout.
-- Do not proceed to Motion until the user approves Theme.
-- Do not generate HTML until the user approves Motion.
+- Do not ask the user to confirm layout; keep it internal.
+- Ask for confirmation after presenting the 4 style directions.
+- Do not proceed to Motion until the user approves the chosen direction.
+- Do not generate additional pages until the user approves Motion.

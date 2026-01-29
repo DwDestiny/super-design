@@ -489,9 +489,11 @@
       import {
         buildIndex,
         pickInitialVariant,
-        computeGridPositions,
         computeCardSize,
         computeGridCellSize,
+        normalizeLayout,
+        buildLayoutPayload,
+        resolveLayoutPositions,
         getDeviceLabel,
         getCardDevice,
         getDeviceIconSvg,
@@ -554,13 +556,14 @@
         positionFloatingPanel();
       }
 
-      function loadPositions() {
+      function loadPositions(cellSize) {
         const raw = localStorage.getItem('superdesign-board-layout');
-        return raw ? JSON.parse(raw) : {};
+        return normalizeLayout(raw, cellSize);
       }
 
-      function savePositions(layout) {
-        localStorage.setItem('superdesign-board-layout', JSON.stringify(layout));
+      function savePositions(layout, cellSize) {
+        const payload = buildLayoutPayload(layout, cellSize);
+        localStorage.setItem('superdesign-board-layout', JSON.stringify(payload));
       }
 
       function computePreviewScale() {
@@ -614,12 +617,15 @@
 
           const onUp = upEvent => {
             header.releasePointerCapture(upEvent.pointerId);
-            const nextLayout = loadPositions();
+            const previewScale = computePreviewScale();
+            const cellSize = computeGridCellSize(state.cards, deviceSizes, previewScale, chrome.height, chrome.width);
+            const nextLayoutState = loadPositions(cellSize);
+            const nextLayout = nextLayoutState.items || {};
             nextLayout[card.id] = {
               x: parseFloat(wrapper.style.left),
               y: parseFloat(wrapper.style.top)
             };
-            savePositions(nextLayout);
+            savePositions(nextLayout, cellSize);
             header.removeEventListener('pointermove', onMove);
             header.removeEventListener('pointerup', onUp);
           };
@@ -669,13 +675,19 @@
       }
 
       function renderCanvas() {
-        const layout = loadPositions();
         const query = searchInput.value.trim().toLowerCase();
         const filtered = state.cards.filter(card => card.display.name.toLowerCase().includes(query));
 
         const previewScale = computePreviewScale();
         const cellSize = computeGridCellSize(filtered, deviceSizes, previewScale, chrome.height, chrome.width);
-        const positions = computeGridPositions(filtered.length, 3, cellSize.width, cellSize.height, 28);
+        const layoutState = loadPositions(cellSize);
+        const layout = layoutState.items || {};
+        const gap = 28;
+        const padding = 72;
+        const boardWidth = board.clientWidth || window.innerWidth;
+        const available = Math.max(1, boardWidth - padding);
+        const maxColumns = Math.max(2, Math.min(4, Math.floor(available / (cellSize.width + gap))));
+        const positions = resolveLayoutPositions(filtered, maxColumns, cellSize.width, cellSize.height, gap, layoutState);
         const activeIds = new Set(filtered.map(card => card.id));
 
         filtered.forEach((card, index) => {
@@ -688,10 +700,9 @@
 
           updateCardElement(card, element);
 
-          const defaultPos = positions[index];
-          const saved = layout[card.id] || defaultPos;
-          element.style.left = `${saved.x}px`;
-          element.style.top = `${saved.y}px`;
+          const resolved = positions[index];
+          element.style.left = `${resolved.x}px`;
+          element.style.top = `${resolved.y}px`;
         });
 
         cardElements.forEach((element, id) => {
@@ -876,6 +887,12 @@
         });
       }
 
+      function setupResizeObserver() {
+        window.addEventListener('resize', () => {
+          renderCanvas();
+        });
+      }
+
       document.addEventListener('click', () => {
         deviceDropdown.classList.remove('open');
       });
@@ -926,6 +943,7 @@
       });
 
       setupDropdown(deviceButton, deviceDropdown);
+      setupResizeObserver();
 
       setTheme();
       applyTransform();

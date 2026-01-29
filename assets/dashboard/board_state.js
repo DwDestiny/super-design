@@ -64,15 +64,79 @@ export function computeGridPositions(count, columns, cardWidth, cardHeight, gap)
   return positions;
 }
 
+function isOverlapping(next, existing, cardWidth, cardHeight) {
+  return (
+    next.x < existing.x + cardWidth &&
+    existing.x < next.x + cardWidth &&
+    next.y < existing.y + cardHeight &&
+    existing.y < next.y + cardHeight
+  );
+}
+
+export function resolveLayoutPositions(cards, columns, cardWidth, cardHeight, gap, layoutState) {
+  const positions = computeGridPositions(cards.length, columns, cardWidth, cardHeight, gap);
+  const stored = layoutState?.useStored ? layoutState.items || {} : {};
+  const occupied = [];
+  const available = positions.slice();
+  const resolved = [];
+
+  const pickNextAvailable = () => {
+    while (available.length) {
+      const candidate = available.shift();
+      const overlaps = occupied.some(item => isOverlapping(candidate, item, cardWidth, cardHeight));
+      if (!overlaps) {
+        return candidate;
+      }
+    }
+    return { x: 0, y: 0 };
+  };
+
+  cards.forEach(card => {
+    const storedPos = stored[card.id];
+    if (storedPos) {
+      const overlaps = occupied.some(item => isOverlapping(storedPos, item, cardWidth, cardHeight));
+      if (!overlaps) {
+        resolved.push({ x: storedPos.x, y: storedPos.y });
+        occupied.push(storedPos);
+        return;
+      }
+    }
+    const fallback = pickNextAvailable();
+    resolved.push(fallback);
+    occupied.push(fallback);
+  });
+
+  return resolved;
+}
+
 export function computeCardSize(device, previewScale, chromeHeight, chromeWidth) {
   const width = device.width * previewScale + chromeWidth;
   const height = device.height * previewScale + chromeHeight;
   return { width, height };
 }
 
+function getFallbackCellSize(deviceSizes, previewScale, chromeHeight, chromeWidth) {
+  const devices = Object.values(deviceSizes || {}).filter(Boolean);
+  if (!devices.length) {
+    return null;
+  }
+  const maxDevice = devices.reduce(
+    (acc, device) => ({
+      width: Math.max(acc.width, device.width || 0),
+      height: Math.max(acc.height, device.height || 0)
+    }),
+    { width: 0, height: 0 }
+  );
+  if (!maxDevice.width || !maxDevice.height) {
+    return null;
+  }
+  return computeCardSize(maxDevice, previewScale, chromeHeight, chromeWidth);
+}
+
 export function computeGridCellSize(cards, deviceSizes, previewScale, chromeHeight, chromeWidth) {
   if (!Array.isArray(cards) || cards.length === 0) {
-    return { width: 900, height: 700 };
+    const fallback = getFallbackCellSize(deviceSizes, previewScale, chromeHeight, chromeWidth);
+    return fallback || { width: 900, height: 700 };
   }
   let maxWidth = 0;
   let maxHeight = 0;
@@ -86,9 +150,41 @@ export function computeGridCellSize(cards, deviceSizes, previewScale, chromeHeig
     if (size.height > maxHeight) maxHeight = size.height;
   });
   if (!maxWidth || !maxHeight) {
-    return { width: 900, height: 700 };
+    const fallback = getFallbackCellSize(deviceSizes, previewScale, chromeHeight, chromeWidth);
+    return fallback || { width: 900, height: 700 };
   }
   return { width: maxWidth, height: maxHeight };
+}
+
+export function buildLayoutPayload(items, cellSize) {
+  return {
+    items: items || {},
+    cell: {
+      width: cellSize?.width || 0,
+      height: cellSize?.height || 0
+    }
+  };
+}
+
+export function normalizeLayout(raw, cellSize) {
+  if (!raw) return { items: {}, useStored: false };
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.items && parsed.cell) {
+      const widthMatch = Math.abs((parsed.cell.width || 0) - (cellSize?.width || 0)) < 2;
+      const heightMatch = Math.abs((parsed.cell.height || 0) - (cellSize?.height || 0)) < 2;
+      if (widthMatch && heightMatch) {
+        return { items: parsed.items || {}, useStored: true };
+      }
+      return { items: parsed.items || {}, useStored: false };
+    }
+    if (parsed && typeof parsed === 'object') {
+      return { items: parsed, useStored: false };
+    }
+  } catch (error) {
+    return { items: {}, useStored: false };
+  }
+  return { items: {}, useStored: false };
 }
 
 export function getDeviceLabel(key) {

@@ -14,43 +14,58 @@ Use a structured, approval-gated workflow, strict visual guidelines, and a local
 - The user requests a specific UI style, theme, or high-quality visual output.
 
 ## Workflow (must follow in order)
-1. Structure intent mapping (internal):
-   - Translate PRD into page-by-page intent and hierarchy.
-   - Decide each page’s layout direction internally (no user confirmation).
-2. Style exploration (external):
+Global constraint: once this skill is active, follow the workflow strictly unless the user explicitly asks to deviate.
+1. Business understanding (internal):
+   - Extract core product information from user-provided context (text, docs, images).
+   - Capture target users, usage scenarios, user flows, feature list, and content types.
+   - Do not include design topics (layout, theme, visual direction).
+   - Output a written brief to the strategy directory.
+2. Page intent mapping (internal):
+   - Determine required page count and the goal of each page (analysis, operation, conversion).
+   - Identify visual priorities for each page based on the goal.
+   - Output a page intent map to the strategy directory.
+3. Skeleton exploration (internal):
+   - Build 3–5 skeleton options for the first page using ASCII wireframes.
+   - If the user specifies a skeleton, output that as one option and still propose additional recommendations.
+   - Output skeleton options with short rationales to the strategy directory.
+4. Style exploration (external):
    - If the user specifies a preferred style or layout, generate 4 directions within that scope.
    - Additionally, explore 3–4 alternative directions outside the user’s scope and explain why they may be stronger.
    - If the user does not specify a style, generate 4 clearly different directions for the first page.
    - If the user specifies a direction count, honor that count.
    - Each direction must change layout, typography, density, and component language together.
-3. Motion design:
+5. Motion design:
    - Define micro-interactions that reinforce the selected style direction.
-4. First page output:
+6. First page output:
    - Deliver 4 style directions as 4 HTML files.
    - Let the user pick the preferred direction.
-5. Board preview:
+7. Board preview:
    - Start the board and show all 4 directions in one view.
-6. Single direction continuation:
+8. Single direction continuation:
    - Apply the selected direction consistently to all remaining pages.
-7. Require explicit user approval before moving to the next step.
+9. Require explicit user approval before moving to the next step.
 
 See references/workflow.md for the detailed procedure and constraints.
 
 ## Step-to-tool mapping
-1. Structure intent mapping:
-   - No tools required; keep internal notes only.
-2. Style exploration:
+1. Business understanding:
+   - No tools required; produce internal strategy brief.
+2. Page intent mapping:
+   - No tools required; produce internal page intent map.
+3. Skeleton exploration:
+   - No tools required; produce ASCII skeleton options.
+4. Style exploration:
    - Prepare theme CSS directions under `/.superdesign/themes/`.
    - Ensure baseline CSS exists.
-3. Motion design:
+5. Motion design:
    - Document micro-interaction rules; no tools required.
-4. First page output:
+6. First page output:
    - Write 4 HTML files into `/.superdesign/design_iterations/`.
    - Link baseline CSS first (if present), then theme CSS.
-5. Board preview:
+7. Board preview:
    - Create the one-click script in `/.superdesign/design_iterations/`.
    - Start the board server so the user can compare directions.
-6. After selection:
+8. After selection:
    - Continue with a single selected direction only.
 ## Tools & Commands (when to use)
 ### Local board server
@@ -76,6 +91,10 @@ See references/workflow.md for the detailed procedure and constraints.
   - Unit test for the board UI state helpers.
 
 ## Artifacts & Output Paths
+- Strategy outputs:
+  - `/.superdesign/strategy/01_product_brief.md`
+  - `/.superdesign/strategy/02_page_intent_map.md`
+  - `/.superdesign/strategy/03_skeleton_options.md`
 - Design HTML outputs:
   - `/.superdesign/design_iterations/` (project workspace)
 - Theme CSS outputs:
@@ -98,12 +117,17 @@ See references/workflow.md for the detailed procedure and constraints.
   - `/.superdesign/design_iterations/{page_slug}_{style_name}_1.html`
 - Subsequent pages (single chosen style only):
   - `/.superdesign/design_iterations/{page_slug}_{style_name}_{n}.html`
+- Strategy docs:
+  - `/.superdesign/strategy/01_product_brief.md`
+  - `/.superdesign/strategy/02_page_intent_map.md`
+  - `/.superdesign/strategy/03_skeleton_options.md`
 
 ## Theme linking rule
 - Every HTML page must include the selected theme CSS via a `<link>` tag.
 - Use the exact path in the workspace:
   - `/.superdesign/themes/{project_slug}_{style_name}.css`
 - If `default_ui_darkmode.css` exists, load it first, then load the chosen theme CSS after it.
+- When served via the board, prefer `/files/...` absolute URLs for HTML/CSS/JS assets to avoid relative path breakage.
 
 ## Visual fidelity rules
 - Use open-source images (real URLs) instead of placeholders.
@@ -136,7 +160,9 @@ See references/workflow.md for the detailed procedure and constraints.
 - For multi-page projects, keep the selected style consistent across all subsequent pages.
 - Always tell the user the local URL printed by the server and how to stop it.
 - If the board script is missing, generate it before asking the user to run it.
- - If the user specifies a direction count, follow it exactly for the first-page outputs.
+- If the user specifies a direction count, follow it exactly for the first-page outputs.
+- Business understanding, page intent mapping, and skeleton exploration are internal deliverables; summarize progress without requesting approval.
+ - The strategy outputs must explicitly confirm mock content coverage and rule compliance.
 
 ## Skill tree
 - Design workflow
@@ -158,6 +184,7 @@ See references/workflow.md for the detailed procedure and constraints.
 - references/design-guidelines.md
 - references/default_ui_darkmode.css
 - references/icon-text-guideline.md
+- references/skeleton-guidance.md
 - references/theme-spec.md
 - references/theme-templates.md
 - references/workflow.md

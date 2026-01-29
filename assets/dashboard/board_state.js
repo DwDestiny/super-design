@@ -156,6 +156,19 @@ export function computeGridCellSize(cards, deviceSizes, previewScale, chromeHeig
   return { width: maxWidth, height: maxHeight };
 }
 
+export function buildFileUrl(path) {
+  if (!path) return '/files/';
+  return `/files/${encodeURI(path)}`;
+}
+
+export function getLayoutStorageKey() {
+  return 'superdesign-board-layout';
+}
+
+export function getDefaultColumns() {
+  return 3;
+}
+
 export function buildLayoutPayload(items, cellSize) {
   return {
     items: items || {},

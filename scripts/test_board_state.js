@@ -8,6 +8,9 @@ import {
   computeGridCellSize,
   normalizeLayout,
   buildLayoutPayload,
+  getLayoutStorageKey,
+  getDefaultColumns,
+  buildFileUrl,
   resolveLayoutPositions,
   getDeviceLabel,
   getCardDevice,
@@ -99,5 +102,8 @@ assert.strictEqual(getToastConfig('success').duration, 1600);
 assert.strictEqual(getToastConfig('warning').duration, 2200);
 assert.strictEqual(getToastConfig('unknown').duration, 1800);
 assert.ok(getConfirmCopy('design-home.html').message.includes('design-home.html'));
+assert.strictEqual(buildFileUrl('design_iterations/demo.html'), '/files/design_iterations/demo.html');
+assert.strictEqual(getLayoutStorageKey(), 'superdesign-board-layout');
+assert.strictEqual(getDefaultColumns(), 3);
 
 console.log('OK');

@@ -444,6 +444,9 @@
         <button class="icon-btn" id="zoomIn" title="Zoom in">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
+        <button class="icon-btn" id="relayout" title="Relayout">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </button>
         <button class="icon-btn" id="themeToggle" title="Toggle theme">
           <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
         </button>
@@ -491,6 +494,9 @@
         pickInitialVariant,
         computeCardSize,
         computeGridCellSize,
+        buildFileUrl,
+        getLayoutStorageKey,
+        getDefaultColumns,
         normalizeLayout,
         buildLayoutPayload,
         resolveLayoutPositions,
@@ -509,6 +515,7 @@
       const zoomOut = document.getElementById('zoomOut');
       const zoomIn = document.getElementById('zoomIn');
       const zoomReset = document.getElementById('zoomReset');
+      const relayout = document.getElementById('relayout');
       const themeToggle = document.getElementById('themeToggle');
       const themeIcon = document.getElementById('themeIcon');
 
@@ -557,13 +564,13 @@
       }
 
       function loadPositions(cellSize) {
-        const raw = localStorage.getItem('superdesign-board-layout');
+        const raw = localStorage.getItem(getLayoutStorageKey());
         return normalizeLayout(raw, cellSize);
       }
 
       function savePositions(layout, cellSize) {
         const payload = buildLayoutPayload(layout, cellSize);
-        localStorage.setItem('superdesign-board-layout', JSON.stringify(payload));
+        localStorage.setItem(getLayoutStorageKey(), JSON.stringify(payload));
       }
 
       function computePreviewScale() {
@@ -664,7 +671,7 @@
           frameWrapper.style.height = `${device.height}px`;
         }
         if (frame) {
-          const nextSrc = `/files/${encodeURIComponent(card.display.path)}`;
+          const nextSrc = buildFileUrl(card.display.path);
           if (!frame.src.endsWith(nextSrc)) {
             frame.src = nextSrc;
           }
@@ -681,13 +688,9 @@
         const previewScale = computePreviewScale();
         const cellSize = computeGridCellSize(filtered, deviceSizes, previewScale, chrome.height, chrome.width);
         const layoutState = loadPositions(cellSize);
-        const layout = layoutState.items || {};
         const gap = 28;
-        const padding = 72;
-        const boardWidth = board.clientWidth || window.innerWidth;
-        const available = Math.max(1, boardWidth - padding);
-        const maxColumns = Math.max(2, Math.min(4, Math.floor(available / (cellSize.width + gap))));
-        const positions = resolveLayoutPositions(filtered, maxColumns, cellSize.width, cellSize.height, gap, layoutState);
+        const columns = getDefaultColumns();
+        const positions = resolveLayoutPositions(filtered, columns, cellSize.width, cellSize.height, gap, layoutState);
         const activeIds = new Set(filtered.map(card => card.id));
 
         filtered.forEach((card, index) => {
@@ -909,6 +912,11 @@
       searchInput.addEventListener('input', renderCanvas);
       zoomOut.addEventListener('click', () => adjustZoom(-0.1));
       zoomIn.addEventListener('click', () => adjustZoom(0.1));
+      relayout.addEventListener('click', () => {
+        localStorage.removeItem(getLayoutStorageKey());
+        renderCanvas();
+        showToast('Relayout applied', 'success');
+      });
       zoomReset.addEventListener('click', () => {
         state.zoom = 1;
         applyTransform();
@@ -928,7 +936,7 @@
       });
       openTab.addEventListener('click', () => {
         if (!state.selected) return;
-        window.open(`/files/${encodeURIComponent(state.selected.display.path)}`, '_blank');
+        window.open(buildFileUrl(state.selected.display.path), '_blank');
       });
       deleteFile.addEventListener('click', openConfirmModal);
       confirmCancel.addEventListener('click', closeConfirmModal);

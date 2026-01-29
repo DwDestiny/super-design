@@ -1,19 +1,37 @@
 # Workflow (SuperDesign)
 
 ## Mandatory sequence
-1. Structure intent mapping (internal)
-2. Style exploration (4 distinct directions)
-3. Motion design (aligned to the selected direction)
-4. Generate the first single-page HTML in 4 directions
-5. Write a one-click board script into the prototype directory and tell the user how to run it
-6. User selects a preferred direction
-7. All subsequent pages follow the selected direction
-8. Require explicit user approval before moving to the next step
+1. Business understanding (internal)
+2. Page intent mapping (internal)
+3. Skeleton exploration (internal)
+4. Style exploration (4 distinct directions)
+5. Motion design (aligned to the selected direction)
+6. Generate the first single-page HTML in 4 directions
+7. Write a one-click board script into the prototype directory and tell the user how to run it
+8. User selects a preferred direction
+9. All subsequent pages follow the selected direction
+10. Require explicit user approval before moving to the next step
 
-## Structure intent mapping (internal)
-- Use PRD to define each page’s intent and hierarchy.
-- Decide layout direction internally; do not ask the user to confirm layout.
-- Keep this as internal reasoning, not an external deliverable.
+## Business understanding (internal)
+- Extract product information from user-provided context (text, docs, images).
+- Capture target users, usage scenarios, user flows, feature list, and required content types.
+- Do not include design decisions (layout, theme, visual direction).
+- Output: `.superdesign/strategy/01_product_brief.md`.
+- This step is internal; do not ask for approval. Inform the user that analysis is complete.
+
+## Page intent mapping (internal)
+- Determine required page count and each page’s intent (analysis, operation, conversion).
+- Define visual priorities per page based on its intent.
+- Output: `.superdesign/strategy/02_page_intent_map.md`.
+- This step is internal; do not ask for approval. Inform the user that mapping is complete.
+
+## Skeleton exploration (internal)
+- Build 3–5 skeleton options for the first page using ASCII wireframes.
+- If the user specifies a skeleton, output that as one option and still propose additional recommendations.
+- Use references/skeleton-guidance.md as a reasoning aid (not a formula).
+- Output: `.superdesign/strategy/03_skeleton_options.md`.
+- This step is internal; do not ask for approval. Inform the user that skeletons are prepared.
+- Note: skeletons define structure logic; style exploration translates the chosen skeleton into visual language.
 
 ## Style exploration requirements (direction count and selection timing)
 - Default to 4 clearly different style directions based on product attributes, target audience, and usage context.
@@ -51,6 +69,7 @@
 - Provide a brief note on icon/text strategy (based on references/icon-text-guideline.md).
 - Confirm mock content coverage (no placeholders, realistic data and assets).
 - Confirm alignment with the user’s feature plan (no added modules).
+ - State explicitly that placeholders are fully replaced with mock content.
 
 ## Board server notice
 - After generating the first 3 HTML variants, create a one-click script in the prototype directory:
@@ -62,17 +81,22 @@
 ## Directory and naming rules (all steps)
 - Base workspace directory:
   - .superdesign/
+- Strategy outputs (steps 1–3):
+  - .superdesign/strategy/01_product_brief.md
+  - .superdesign/strategy/02_page_intent_map.md
+  - .superdesign/strategy/03_skeleton_options.md
+  - Include: summary, key assumptions, and risks (if any) to keep strategy reusable.
 - Default UI baseline CSS:
   - .superdesign/design_iterations/default_ui_darkmode.css (copy from references/default_ui_darkmode.css)
 - Slug rules:
   - Use lowercase ASCII only.
   - Replace spaces with `-`.
   - Remove symbols; keep letters, numbers, and `-` only.
-- Theme outputs (step 2):
+- Theme outputs (style exploration):
   - .superdesign/themes/{project_slug}_{style_name}.css
-- HTML outputs (step 4 and after):
+- HTML outputs (first page and after):
   - .superdesign/design_iterations/{page_slug}_{variant}_{n}.html
-- Board script location (step 5):
+- Board script location (board step):
   - .superdesign/design_iterations/start_board.sh
   - .superdesign/design_iterations/start_board.ps1
 
@@ -80,6 +104,7 @@
 - Every HTML page must include the selected theme CSS via a <link> tag:
   - /.superdesign/themes/{project_slug}_{style_name}.css
 - If default_ui_darkmode.css exists, load it before the chosen theme CSS.
+- When running in the board, use `/files/...` absolute URLs for HTML/CSS/JS assets to avoid relative path failures.
 
 ## After selection
 - Ask the user to pick one direction (from both in-scope and alternative proposals).

@@ -50,6 +50,7 @@ Full details live in `references/workflow.md`.
 3) After HTML is generated, start the board:
    - `./.superdesign/design_iterations/start_board.sh`
 4) Open the local URL printed in the terminal.
+5) If you use the runbook commands, replace `<SKILL_DIR>` and `<PROJECT_ROOT>` with your local paths.
 
 ## Output structure
 ```

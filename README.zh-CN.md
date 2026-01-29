@@ -44,6 +44,7 @@ Super Design Skill 是一个具备自主探索能力的高保真 UI 设计工作
 3) 生成 HTML 后运行看板脚本：
    - `./.superdesign/design_iterations/start_board.sh`
 4) 打开终端输出的本地地址即可预览。
+5) 若使用 runbook 命令，请将 `<SKILL_DIR>` 与 `<PROJECT_ROOT>` 替换为本地实际路径。
 
 ## 产出结构
 ```

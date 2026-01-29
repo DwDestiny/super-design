@@ -21,6 +21,7 @@ Use a structured, approval-gated workflow, strict visual guidelines, and a local
    - If the user specifies a preferred style or layout, generate 4 directions within that scope.
    - Additionally, explore 3–4 alternative directions outside the user’s scope and explain why they may be stronger.
    - If the user does not specify a style, generate 4 clearly different directions for the first page.
+   - If the user specifies a direction count, honor that count.
    - Each direction must change layout, typography, density, and component language together.
 3. Motion design:
    - Define micro-interactions that reinforce the selected style direction.
@@ -68,7 +69,7 @@ See references/workflow.md for the detailed procedure and constraints.
   - Use for preview if the project does not provide `start_board.sh`.
 - `scripts/start_board.sh`
   - Template one-click board script (macOS/Linux).
-  - Use at step 5: copy into `/.superdesign/design_iterations/start_board.sh` with the absolute path preserved.
+  - Use at step 5: copy into `/.superdesign/design_iterations/start_board.sh` and replace placeholders with local paths.
 - `scripts/test_dashboard.py`
   - Smoke test for the dashboard server.
 - `scripts/test_board_state.js`
@@ -110,6 +111,8 @@ See references/workflow.md for the detailed procedure and constraints.
 - Use 4pt or 8pt spacing system and keep touch targets ≥ 48px.
 - Do not use emoji in any UI text, labels, or icons.
 - Follow references/icon-text-guideline.md to decide icon-only vs. icon + text usage.
+- If the user provides explicit product feature planning, follow it strictly and do not add new modules.
+- No placeholders anywhere. Generate realistic mock content by understanding the business context and requirements, including data, avatars, logos, icons, lists, and charts. Do not wait for provided assets or data; create domain-appropriate mock content so every element looks production-ready.
 
 ## Style exploration guidance (non-formula)
 - The 4 directions must be clearly different in design intent, not minor variants.
@@ -133,6 +136,7 @@ See references/workflow.md for the detailed procedure and constraints.
 - For multi-page projects, keep the selected style consistent across all subsequent pages.
 - Always tell the user the local URL printed by the server and how to stop it.
 - If the board script is missing, generate it before asking the user to run it.
+ - If the user specifies a direction count, follow it exactly for the first-page outputs.
 
 ## Skill tree
 - Design workflow

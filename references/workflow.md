@@ -15,9 +15,10 @@
 - Decide layout direction internally; do not ask the user to confirm layout.
 - Keep this as internal reasoning, not an external deliverable.
 
-## Style exploration requirements (4 directions)
-- Recommend 4 clearly different style directions based on product attributes, target audience, and usage context.
-- If the user specifies a preferred style or layout, generate 4 directions within that scope.
+## Style exploration requirements (direction count and selection timing)
+- Default to 4 clearly different style directions based on product attributes, target audience, and usage context.
+- If the user specifies a direction count (e.g. 5 or 6), honor that count.
+- If the user specifies a preferred style or layout, generate directions within that scope.
 - Additionally, explore 3–4 alternative directions outside the user’s scope and explain why they may be stronger.
 - Differences must be obvious at first glance (not just color changes).
 - Each direction must:
@@ -27,6 +28,8 @@
   - Use 4pt or 8pt spacing system and touch targets ≥ 48px.
   - Use real icons and real open-source images for fidelity.
   - Apply icon/text decision guidance from references/icon-text-guideline.md.
+  - Respect the user's explicit product feature planning; do not add extra modules.
+  - No placeholders anywhere. Generate realistic mock content by understanding the business context and requirements, including data, avatars, logos, icons, lists, and charts. Do not wait for provided assets or data; create domain-appropriate mock content so every element looks production-ready.
 
 ## Motion design requirements
 - Define micro-interactions and transitions for key UI elements.
@@ -34,16 +37,26 @@
 
 ## HTML output constraints (first page)
 - Output a single HTML page for one screen only.
-- For the first page, generate 4 HTML directions aligned to the 4 recommended styles.
+- For the first page, generate HTML directions aligned to the explored directions.
 - Use the file naming convention:
   - .superdesign/design_iterations/{page_slug}_{style_name}_1.html
 - Reference the theme CSS file created in the Theme step.
+
+## Selection timing (important)
+- Do not ask the user to choose a direction before visual outputs exist.
+- The user should select a direction only after reviewing the actual HTML previews.
+- Use text-only direction names for explanation, not as a pre‑selection gate.
+
+## Direction delivery checklist (each direction)
+- Provide a brief note on icon/text strategy (based on references/icon-text-guideline.md).
+- Confirm mock content coverage (no placeholders, realistic data and assets).
+- Confirm alignment with the user’s feature plan (no added modules).
 
 ## Board server notice
 - After generating the first 3 HTML variants, create a one-click script in the prototype directory:
   - macOS/Linux: design_iterations/start_board.sh
   - Windows: design_iterations/start_board.ps1
-- Use the exact commands from references/board-runbook.md (absolute path already filled).
+- Use the commands from references/board-runbook.md and replace placeholders for the local environment.
 - Explain to the user that the dashboard will list all versions and allow preview in one place.
 
 ## Directory and naming rules (all steps)
@@ -79,6 +92,6 @@
 
 ## Approval checkpoints
 - Do not ask the user to confirm layout; keep it internal.
-- Ask for confirmation after presenting the 4 style directions.
+- Ask for confirmation only after presenting the visual directions.
 - Do not proceed to Motion until the user approves the chosen direction.
 - Do not generate additional pages until the user approves Motion.

@@ -25,25 +25,28 @@ Global constraint: once this skill is active, follow the workflow strictly unles
    - Identify visual priorities for each page based on the goal.
    - Output a page intent map to the strategy directory.
 3. Skeleton exploration (internal):
-   - Build 3–5 skeleton options for the first page using ASCII wireframes.
+   - Build 3–5 skeleton options for the first page and render full HTML with a neutral, shared visual tone.
+   - Focus on structure, information flow, and density; keep component styling intentionally neutral.
    - If the user specifies a skeleton, output that as one option and still propose additional recommendations.
    - Output skeleton options with short rationales to the strategy directory.
-4. Style exploration (external):
+4. Skeleton preview (external):
+   - Provide a one-click board script so the user can preview and pick the preferred skeleton.
+5. Theme exploration (external):
    - If the user specifies a preferred style or layout, generate 4 directions within that scope.
    - Additionally, explore 3–4 alternative directions outside the user’s scope and explain why they may be stronger.
    - If the user does not specify a style, generate 4 clearly different directions for the first page.
    - If the user specifies a direction count, honor that count.
-   - Each direction must change layout, typography, density, and component language together.
-5. Motion design:
+   - Keep the chosen skeleton fixed; let themes reshape component language, typography, and color.
+6. Motion design:
    - Define micro-interactions that reinforce the selected style direction.
-6. First page output:
-   - Deliver 4 style directions as 4 HTML files.
-   - Let the user pick the preferred direction.
-7. Board preview:
-   - Start the board and show all 4 directions in one view.
-8. Single direction continuation:
+7. Theme output:
+   - Deliver multiple theme directions as HTML files built on the selected skeleton.
+   - Let the user pick the preferred theme.
+8. Board preview:
+   - Start the board and show all theme directions in one view.
+9. Single direction continuation:
    - Apply the selected direction consistently to all remaining pages.
-9. Require explicit user approval before moving to the next step.
+10. Require explicit user approval before moving to the next step.
 
 See references/workflow.md for the detailed procedure and constraints.
 
@@ -53,19 +56,20 @@ See references/workflow.md for the detailed procedure and constraints.
 2. Page intent mapping:
    - No tools required; produce internal page intent map.
 3. Skeleton exploration:
-   - No tools required; produce ASCII skeleton options.
-4. Style exploration:
+   - Produce full HTML skeletons with a shared neutral tone.
+4. Skeleton preview:
+   - Create the one-click script in `/.superdesign/design_iterations/` and tell the user to launch the board.
+5. Theme exploration:
    - Prepare theme CSS directions under `/.superdesign/themes/`.
    - Ensure baseline CSS exists.
-5. Motion design:
+6. Motion design:
    - Document micro-interaction rules; no tools required.
-6. First page output:
-   - Write 4 HTML files into `/.superdesign/design_iterations/`.
+7. Theme output:
+   - Write theme HTML files into `/.superdesign/design_iterations/`.
    - Link baseline CSS first (if present), then theme CSS.
-7. Board preview:
-   - Create the one-click script in `/.superdesign/design_iterations/`.
-   - Start the board server so the user can compare directions.
-8. After selection:
+8. Board preview:
+   - Start the board server so the user can compare theme directions.
+9. After selection:
    - Continue with a single selected direction only.
 ## Tools & Commands (when to use)
 ### Local board server

@@ -4,13 +4,14 @@
 1. Business understanding (internal)
 2. Page intent mapping (internal)
 3. Skeleton exploration (internal)
-4. Style exploration (4 distinct directions)
-5. Motion design (aligned to the selected direction)
-6. Generate the first single-page HTML in 4 directions
-7. Write a one-click board script into the prototype directory and tell the user how to run it
-8. User selects a preferred direction
-9. All subsequent pages follow the selected direction
-10. Require explicit user approval before moving to the next step
+4. Skeleton preview (board)
+5. Theme exploration (4 distinct directions)
+6. Motion design (aligned to the selected direction)
+7. Generate the first single-page HTML in 4 directions
+8. Write a one-click board script into the prototype directory and tell the user how to run it
+9. User selects a preferred direction
+10. All subsequent pages follow the selected direction
+11. Require explicit user approval before moving to the next step
 
 ## Business understanding (internal)
 - Extract product information from user-provided context (text, docs, images).
@@ -26,14 +27,19 @@
 - This step is internal; do not ask for approval. Inform the user that mapping is complete.
 
 ## Skeleton exploration (internal)
-- Build 3–5 skeleton options for the first page using ASCII wireframes.
+- Build 3–5 skeleton options for the first page and render full HTML with a neutral, shared visual tone.
+- Emphasize structure, information flow, and density; keep component styling intentionally neutral.
 - If the user specifies a skeleton, output that as one option and still propose additional recommendations.
 - Use references/skeleton-guidance.md as a reasoning aid (not a formula).
 - Output: `.superdesign/strategy/03_skeleton_options.md`.
 - This step is internal; do not ask for approval. Inform the user that skeletons are prepared.
 - Note: skeletons define structure logic; style exploration translates the chosen skeleton into visual language.
 
-## Style exploration requirements (direction count and selection timing)
+## Skeleton preview (board)
+- Provide the one-click board script after skeleton HTML is generated.
+- Tell the user to use the board to compare skeletons and choose a structure.
+
+## Theme exploration requirements (direction count and selection timing)
 - Default to 4 clearly different style directions based on product attributes, target audience, and usage context.
 - If the user specifies a direction count (e.g. 5 or 6), honor that count.
 - If the user specifies a preferred style or layout, generate directions within that scope.
@@ -48,6 +54,7 @@
   - Apply icon/text decision guidance from references/icon-text-guideline.md.
   - Respect the user's explicit product feature planning; do not add extra modules.
   - No placeholders anywhere. Generate realistic mock content by understanding the business context and requirements, including data, avatars, logos, icons, lists, and charts. Do not wait for provided assets or data; create domain-appropriate mock content so every element looks production-ready.
+  - Keep the chosen skeleton fixed; vary visual language, components, and color to express theme.
 
 ## Motion design requirements
 - Define micro-interactions and transitions for key UI elements.
